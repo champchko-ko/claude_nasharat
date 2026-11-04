@@ -1,0 +1,47 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+vi.mock("@/lib/rbac/hasPermission", () => ({
+  hasPermission: vi.fn(),
+}));
+
+import { hasPermission } from "@/lib/rbac/hasPermission";
+import { assertCanRespondToCircular } from "./assertCanRespondToCircular";
+import type { ProfileRow } from "@/lib/auth/getCurrentProfile";
+
+describe("assertCanRespondToCircular", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("throws AuthenticationError if profile is null or has no school/department", async () => {
+    await expect(assertCanRespondToCircular(null)).rejects.toThrow(
+      "Must belong to a department to respond",
+    );
+
+    const noSchool = { id: "u-1", school_id: null, department_id: "d-1" } as unknown as ProfileRow;
+    await expect(assertCanRespondToCircular(noSchool)).rejects.toThrow(
+      "Must belong to a department to respond",
+    );
+
+    const noDept = { id: "u-1", school_id: "s-1", department_id: null } as unknown as ProfileRow;
+    await expect(assertCanRespondToCircular(noDept)).rejects.toThrow(
+      "Must belong to a department to respond",
+    );
+  });
+
+  it("throws ForbiddenError if user lacks circular.respond permission", async () => {
+    vi.mocked(hasPermission).mockResolvedValue(false);
+    const profile = { id: "u-1", school_id: "s-1", department_id: "d-1" } as unknown as ProfileRow;
+
+    await expect(assertCanRespondToCircular(profile)).rejects.toThrow("Unauthorized");
+    expect(hasPermission).toHaveBeenCalledWith("circular.respond", "s-1", "d-1");
+  });
+
+  it("returns schoolId and departmentId when authorized", async () => {
+    vi.mocked(hasPermission).mockResolvedValue(true);
+    const profile = { id: "u-1", school_id: "s-1", department_id: "d-1" } as unknown as ProfileRow;
+
+    const result = await assertCanRespondToCircular(profile);
+    expect(result).toEqual({ schoolId: "s-1", departmentId: "d-1" });
+  });
+});

@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>مدرسة الأمل للبنات - لوحة الإدارة التفاعلية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Aref+Ruqaa:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Pixel-matched to the 844 x 491 mockup. Everything inside .stage is positioned in mockup pixels
+     (y offset -2px because the mockup's 2px dark top strip is cropped) and the whole stage is scaled to fit the window. */
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #e6e3ec;
+        overflow: hidden;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+      body {
+        display: grid;
+        place-items: center;
+        font-family: "Cairo", "Tajawal", system-ui, sans-serif;
+      }
+      .stage {
+        position: relative;
+        width: 844px;
+        height: 491px;
+        overflow: hidden;
+        transform-origin: center center;
+        flex: none;
+        box-shadow: 0 15px 45px rgba(20, 25, 60, 0.22);
+        border-radius: 14px;
+      }
+      .s {
+        position: absolute;
+        left: 0;
+        top: -2px;
+        width: 844px;
+        height: 498px;
+      }
+      .plate {
+        position: absolute;
+        left: 0;
+        top: 2px;
+        width: 844px;
+        height: 491px;
+        display: block;
+      }
+
+      /* generic absolutely-placed text: --r = right edge (mockup x), --cy = vertical centre (mockup y) */
+      .t {
+        position: absolute;
+        right: calc(844px - var(--r));
+        top: var(--cy);
+        transform: translateY(-50%);
+        white-space: nowrap;
+        line-height: 1.15;
+        direction: rtl;
+        text-align: right;
+      }
+      .tc {
+        position: absolute;
+        left: var(--cx);
+        top: var(--cy);
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        line-height: 1;
+      }
+      .g {
+        position: absolute;
+        left: var(--cx);
+        top: var(--cy);
+        transform: translate(-50%, -50%);
+        display: block;
+        pointer-events: none;
+      }
+
+      /* ---- Header ---- */
+      .school-b {
+        font-weight: 800;
+        font-size: 14.3px;
+        color: #202e54;
+      }
+      .school-l {
+        font-weight: 600;
+        font-size: 14.3px;
+        color: #4a5c86;
+      }
+      .school-sub {
+        font:
+          italic 500 6.6px/1 "Cairo",
+          sans-serif;
+        color: #51638b;
+        direction: ltr;
+        letter-spacing: 0.1px;
+      }
+      .lang {
+        font-weight: 700;
+        font-size: 9.6px;
+        color: #39486f;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 6px;
+        transition: background 0.2s;
+      }
+      .lang:hover {
+        background: rgba(57, 72, 111, 0.12);
+      }
+      .uname {
+        font-weight: 800;
+        font-size: 10.9px;
+        color: #27406c;
+        cursor: pointer;
+      }
+      .urole {
+        font-weight: 600;
+        font-size: 7.6px;
+        color: #6b7da0;
+      }
+
+      /* ---- Hero text ---- */
+      .hi {
+        font-weight: 800;
+        font-size: 22px;
+        color: #141d47;
+      }
+      .where {
+        font-weight: 800;
+        font-size: 15.3px;
+        color: #0f2559;
+      }
+      .tag {
+        font-weight: 600;
+        font-size: 11.4px;
+        color: #4c6490;
+      }
+
+      /* ---- Stat cards ---- */
+      .lab {
+        font-weight: 800;
+        font-size: 9px;
+        pointer-events: none;
+      }
+      .num {
+        font-weight: 800;
+        font-size: 25px;
+        pointer-events: none;
+      }
+      .stat-hitbox {
+        position: absolute;
+        width: 124px;
+        height: 66px;
+        top: 222px;
+        cursor: pointer;
+        border-radius: 14px;
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+      }
+      .stat-hitbox:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      /* ---- Sidebar ---- */
+      .pill {
+        position: absolute;
+        left: 684px;
+        top: 65px;
+        width: 147px;
+        height: 31px;
+        border-radius: 16px;
+        background: linear-gradient(90deg, #4259c8, #4b63d3 60%, #4660d0);
+        box-shadow:
+          0 4px 12px rgba(55, 80, 200, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        transition: top 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+      }
+      .nav-hitbox {
+        position: absolute;
+        left: 680px;
+        width: 154px;
+        height: 31px;
+        cursor: pointer;
+        border-radius: 16px;
+        z-index: 2;
+      }
+      .nav-hitbox:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .nav {
+        font-weight: 500;
+        font-size: 11.5px;
+        color: #eaeef8;
+        letter-spacing: 0;
+        pointer-events: none;
+        transition: color 0.2s;
+      }
+      .nav.on {
+        color: #fff;
+        font-weight: 700;
+      }
+
+      /* ---- Cards ---- */
+      .card-title {
+        font-weight: 800;
+      }
+      .badge {
+        position: absolute;
+        left: calc(var(--cx) - var(--sz) / 2);
+        top: calc(var(--cy) - var(--sz) / 2);
+        width: var(--sz);
+        height: var(--sz);
+        border-radius: calc(var(--sz) * 0.32);
+        background: var(--bg);
+        box-shadow:
+          0 2px 6px rgba(80, 100, 150, 0.1),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+        pointer-events: none;
+      }
+      .row-t {
+        font-weight: 700;
+        font-size: 10.2px;
+        pointer-events: none;
+      }
+      .row-s {
+        font-weight: 500;
+        font-size: 8.4px;
+        pointer-events: none;
+      }
+      .row-hitbox {
+        position: absolute;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.18s ease;
+      }
+      .row-hitbox:hover {
+        background: rgba(46, 59, 110, 0.06);
+      }
+
+      /* ---- Interactive Modal & Toast Overlays ---- */
+      .modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(15, 25, 50, 0.45);
+        backdrop-filter: blur(3px);
+        z-index: 90;
+        display: none;
+        place-items: center;
+      }
+      .modal-overlay.open {
+        display: grid;
+      }
+      .modal-card {
+        width: 420px;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        direction: rtl;
+        position: relative;
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+        padding-bottom: 10px;
+        margin-bottom: 14px;
+      }
+      .modal-header h3 {
+        margin: 0;
+        font-size: 15px;
+        color: #141d47;
+        font-weight: 800;
+      }
+      .modal-close {
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        color: #64748b;
+        font-weight: bold;
+      }
+      .modal-close:hover {
+        color: #ef4444;
+      }
+      .modal-item {
+        padding: 8px 10px;
+        border-radius: 8px;
+        background: #f8fafc;
+        margin-bottom: 8px;
+        border: 1px solid #e2e8f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .modal-item-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: #1e293b;
+      }
+      .modal-item-sub {
+        font-size: 10px;
+        color: #64748b;
+      }
+
+      .toast {
+        position: absolute;
+        bottom: 14px;
+        left: 50%;
+        transform: translateX(-50%) translateY(50px);
+        background: #141d47;
+        color: #ffffff;
+        padding: 8px 18px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        z-index: 99;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+      }
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <div class="s" id="root">
+        <img class="plate" src="assets/plate.jpg" alt="" />
+
+        <!-- Header -->
+        <div class="t" style="--r: 697px; --cy: 29px">
+          <span class="school-b">مدرسة الأمل</span> <span class="school-l">الثانوية-بنات</span>
+        </div>
+        <div class="t school-sub" style="--r: 697px; --cy: 43px">Al-Amal High School</div>
+        <div
+          class="t lang"
+          style="--r: 244px; --cy: 35px"
+          onclick="toast('تم تفعيل اللغة العربية كافتراضي')"
+        >
+          العربية
+        </div>
+        <div class="t uname" style="--r: 131px; --cy: 32px" onclick="openProfile()">
+          أ. سلوى العنزي
+        </div>
+        <div class="t urole" style="--r: 103px; --cy: 46px">مدير المدرسة</div>
+
+        <!-- Hero -->
+        <div class="t hi" style="--r: 586px; --cy: 100px">مرحباً بِكِ</div>
+        <div class="t where" style="--r: 586px; --cy: 132px">في لوحة إدارة المدرسة</div>
+        <div class="t tag" style="--r: 586px; --cy: 160px">
+          الريادة والتميز في بيئة تعليمية محفزة
+        </div>
+
+        <!-- Dynamic Elements Containers -->
+        <div id="sidebar"></div>
+        <div id="stats"></div>
+        <div id="activities"></div>
+        <div id="events"></div>
+
+        <!-- Modal Overlay -->
+        <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+          <div class="modal-card" onclick="event.stopPropagation()">
+            <div class="modal-header">
+              <h3 id="modal-title">تفاصيل</h3>
+              <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modal-body"></div>
+          </div>
+        </div>
+
+        <!-- Floating Toast -->
+        <div class="toast" id="toast-el">تم الإجراء بنجاح</div>
+      </div>
+    </div>
+
+    <script>
+      /* ===== Data from Live School Database ===== */
+      const schoolMeta = {
+        name_ar: "مدرسة الأمل الثانوية-بنات",
+        name_en: "Al-Amal High School",
+        ministry: "دولة الكويت · وزارة التربية · منطقة العاصمة التعليمية",
+        academic_year: "2026/2027",
+        principal: "أ. سلوى العنزي",
+        role: "مدير المدرسة (School Manager)",
+        vision:
+          "الريادة والتميز في تقديم بيئة تعليمية وتربوية محفزة على الإبداع والابتكار والقيادة.",
+        mission:
+          "إعداد جيل متميز علمياً وخلقياً يمتلك مهارات القرن الحادي والعشرين وقادر على خدمة مجتمعه ووطنه.",
+      };
+
+      /* ===== Navigation from Old Dashboard (AppSidebar.tsx) ===== */
+      const appNavCore = [
+        { label: "لوحة التحكم", href: "/dashboard", icon: "home", y: 80, active: true },
+        { label: "التعاميم والمهام", href: "/circulars", icon: "circulars", y: 122 },
+        { label: "طلبات الصيانة", href: "/maintenance", icon: "maintenance", y: 164 },
+        { label: "التقويم المدرسي", href: "/calendar", icon: "calendar", y: 206 },
+        { label: "إنجازات المدرسة", href: "/achievements", icon: "homework", y: 248 },
+        { label: "التقارير", href: "/reports", icon: "reports", y: 290 },
+        { label: "الإعدادات", href: "/settings", icon: "settings", y: 332 },
+      ];
+
+      const appNavExtended = [
+        { label: "لوحة التحكم", href: "/dashboard", icon: "home", y: 80, active: true },
+        { label: "التعاميم والمهام", href: "/circulars", icon: "circulars", y: 114 },
+        { label: "طلبات الصيانة", href: "/maintenance", icon: "maintenance", y: 146 },
+        { label: "التقويم المدرسي", href: "/calendar", icon: "calendar", y: 178 },
+        { label: "إنجازات المدرسة", href: "/achievements", icon: "homework", y: 209 },
+        { label: "التقارير", href: "/reports", icon: "reports", y: 240 },
+        { label: "الإعدادات", href: "/settings", icon: "settings", y: 272 },
+        { label: "إدارة الصلاحيات", href: "/settings/roles", icon: "roles", y: 303 },
+        { label: "سجل التدقيق", href: "/settings/audit", icon: "audit", y: 335 },
+        { label: "بيانات المدرسة", href: "/settings/school", icon: "info", y: 366 },
+      ];
+
+      let navMode = "core"; // 'core' = exactly 7 items from AppSidebar.tsx, 'extended' = 10 items
+      let currentNavItems = [...appNavCore];
+
+      const stats = [
+        // order as in mockup: right → left
+        {
+          id: "circulars",
+          label: "المناشير والتعميمات",
+          value: 4,
+          icon: "stat_bell",
+          left: 495,
+          lr: 574,
+          nx: 554,
+          ix: 588,
+          iy: 245,
+          iw: 32,
+          ih: 38,
+          lc: "#b64b28",
+          nc: "#b8350e",
+        },
+        {
+          id: "maintenance",
+          label: "طلبات الصيانة",
+          value: 4,
+          icon: "stat_wrench",
+          left: 360,
+          lr: 408,
+          nx: 398,
+          ix: 431,
+          iy: 245,
+          iw: 30,
+          ih: 34,
+          lc: "#287d72",
+          nc: "#0a4558",
+        },
+        {
+          id: "calendar",
+          label: "الفعاليات المجدولة",
+          value: 5,
+          icon: "stat_clip",
+          left: 230,
+          lr: 280,
+          nx: 266,
+          ix: 298,
+          iy: 245,
+          iw: 28,
+          ih: 34,
+          lc: "#7a4da6",
+          nc: "#6e31a4",
+        },
+        {
+          id: "achieve",
+          label: "الإنجازات المعتمدة",
+          value: 2,
+          icon: "stat_file",
+          left: 82,
+          lr: 131,
+          nx: 118,
+          ix: 158,
+          iy: 246,
+          iw: 28,
+          ih: 32,
+          lc: "#213fab",
+          nc: "#0e2a94",
+        },
+      ];
+
+      const activities = [
+        {
+          id: "a1",
+          text: "جدول المناوبة المدرسية والإشراف",
+          time: "منشور لجميع الأقسام",
+          icon: "act_1",
+          cy: 361,
+          bg: "#e4edfc",
+          desc: "تم اعتماد ونشر جدول المناوبة المدرسية والإشراف اليومي على الساحات والممرات لحفظ أمن وسلامة الطالبات.",
+        },
+        {
+          id: "a2",
+          text: "بلاغ عاجل: صيانة وحدات التكييف",
+          time: "MNT-2026-001 · قيد المعالجة",
+          icon: "act_2",
+          cy: 403,
+          bg: "#fdeedb",
+          desc: "عطل في وحدات التكييف المركزية بالصالة الرياضية - أولوية طارئة تم إسنادها لفريق الصيانة الفنية.",
+        },
+        {
+          id: "a3",
+          text: "إنجاز: الأول في أولمبياد الروبوت",
+          time: "موثق ومعتمد رسمياً",
+          icon: "act_3",
+          cy: 447,
+          bg: "#e3f3e8",
+          desc: "حققت المدرسة المركز الأول على مستوى المحافظة في مسابقة الروبوت والذكاء الاصطناعي بمشاركة فريق العلوم الموهوب.",
+        },
+      ];
+
+      const events = [
+        {
+          id: "e1",
+          title: "بدء امتحانات منتصف الفصل الأول",
+          date: "1 نوفمبر 2026",
+          icon: "ev_1",
+          cy: 372,
+          bg: "#efe6f8",
+          loc: "القاعات الامتحانية المجهزة",
+        },
+        {
+          id: "e2",
+          title: "المعرض السنوي للعلوم والروبوت",
+          date: "15 نوفمبر 2026",
+          icon: "ev_2",
+          cy: 413,
+          bg: "#e2ecfc",
+          loc: "المسرح المدرسي الرئيسي",
+        },
+        {
+          id: "e3",
+          title: "اجتماع الجمعية العمومية للآباء",
+          date: "20 نوفمبر 2026",
+          icon: "ev_3",
+          cy: 455,
+          bg: "#def1e3",
+          loc: "قاعة المؤتمرات الرئيسية",
+        },
+      ];
+
+      /* ===== Render ===== */
+      const img = (n, cx, cy, w, h) =>
+        `<img class="g" src="assets/${n}.png" style="--cx:${cx}px;--cy:${cy}px;width:${w}px;height:${h}px" alt="">`;
+
+      function renderNav() {
+        const activeItem = currentNavItems.find((x) => x.active) || currentNavItems[0];
+        document.getElementById("sidebar").innerHTML =
+          `<div class="pill" id="nav-pill" style="top:${activeItem.y - 15}px"></div>` +
+          currentNavItems
+            .map(
+              (n, i) =>
+                `<a class="nav-hitbox" href="/ar${n.href}" style="top:${n.y - 15}px" onclick="onNavClick(event, ${i})" title="${n.label} (/ar${n.href})"></a>` +
+                img("nav_" + n.icon, 810, n.y, 26, 26) +
+                `<a href="/ar${n.href}" onclick="onNavClick(event, ${i})" class="t nav ${n.active ? "on" : ""}" id="nav-lbl-${i}" style="--r:787px;--cy:${n.y}px;text-decoration:none">${n.label}</a>`,
+            )
+            .join("") +
+          `<div class="tc" style="--cx:758px;--cy:468px">
+      <button onclick="toggleNavMode()" style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:#cfd8ee;font-size:8px;font-family:inherit;padding:3px 8px;border-radius:10px;cursor:pointer;transition:all 0.2s">
+        ${navMode === "core" ? "عرض القائمة الموسعة (10)" : "عرض قائمة لوحة التحكم (7)"}
+      </button>
+    </div>`;
+      }
+
+      function selectNav(index) {
+        currentNavItems.forEach((item, i) => {
+          item.active = i === index;
+          const lbl = document.getElementById(`nav-lbl-${i}`);
+          if (lbl) {
+            if (item.active) lbl.classList.add("on");
+            else lbl.classList.remove("on");
+          }
+        });
+        const pill = document.getElementById("nav-pill");
+        if (pill && currentNavItems[index]) {
+          pill.style.top = `${currentNavItems[index].y - 15}px`;
+        }
+      }
+
+      function onNavClick(e, index) {
+        selectNav(index);
+        const item = currentNavItems[index];
+        if (window.location.protocol.startsWith("http")) {
+          // Live dev server navigation:
+          window.location.href = `/ar${item.href}`;
+        } else {
+          // Standalone file preview:
+          e.preventDefault();
+          toast(`الانتقال إلى مسار التطبيق: /ar${item.href} (${item.label})`);
+        }
+      }
+
+      function toggleNavMode() {
+        if (navMode === "core") {
+          navMode = "extended";
+          currentNavItems = appNavExtended.map((x) => ({ ...x, active: x.href === "/dashboard" }));
+          toast("تم التبديل إلى القائمة الموسعة (10 أقسام)");
+        } else {
+          navMode = "core";
+          currentNavItems = appNavCore.map((x) => ({ ...x, active: x.href === "/dashboard" }));
+          toast("تم التبديل إلى قائمة التطبيق الأساسية (7 أقسام)");
+        }
+        renderNav();
+      }
+
+      function renderStats() {
+        document.getElementById("stats").innerHTML = stats
+          .map(
+            (s, i) =>
+              `<div class="stat-hitbox" style="left:${s.left}px" onclick="openStat(${i})"></div>` +
+              img(s.icon, s.ix, s.iy, s.iw, s.ih) +
+              `<div class="t lab" style="--r:${s.lr}px;--cy:242px;color:${s.lc}">${s.label}</div>` +
+              `<div class="tc num" style="--cx:${s.nx}px;--cy:272px;color:${s.nc}">${s.value}</div>`,
+          )
+          .join("");
+      }
+
+      function renderActivities() {
+        document.getElementById("activities").innerHTML =
+          `<div class="t card-title" style="--r:645px;--cy:331px;font-size:9.6px;color:#2e3b6e">أحدث النشاطات المعتمدة</div>` +
+          activities
+            .map(
+              (a, i) =>
+                `<div class="row-hitbox" style="left:474px;top:${a.cy - 18}px;width:184px;height:36px" onclick="openActivity(${i})"></div>` +
+                `<div class="badge" style="--cx:635px;--cy:${a.cy}px;--sz:30px;--bg:${a.bg}"></div>` +
+                img(a.icon, 635, a.cy, 22, 22) +
+                `<div class="t row-t" style="--r:612px;--cy:${a.cy - 4}px;color:#3f5c86">${a.text}</div>` +
+                `<div class="t row-s" style="--r:612px;--cy:${a.cy + 12}px;color:#8d9db3">${a.time}</div>`,
+            )
+            .join("");
+      }
+
+      function renderEvents() {
+        document.getElementById("events").innerHTML =
+          `<div class="t card-title" style="--r:401px;--cy:342px;font-size:12.4px;color:#27366f">التقويم والفعاليات القادمة</div>` +
+          events
+            .map(
+              (e, i) =>
+                `<div class="row-hitbox" style="left:226px;top:${e.cy - 18}px;width:184px;height:38px" onclick="openEvent(${i})"></div>` +
+                `<div class="badge" style="--cx:394px;--cy:${e.cy}px;--sz:28px;--bg:${e.bg}"></div>` +
+                img(e.icon, 394, e.cy, 22, 22) +
+                `<div class="t row-t" style="--r:369px;--cy:${e.cy - 4}px;color:#2f4577">${e.title}</div>` +
+                `<div class="t row-s" style="--r:369px;--cy:${e.cy + 13}px;color:#8d94b0">${e.date}</div>` +
+                `<svg class="g" style="--cx:231px;--cy:${e.cy + 5}px" width="6" height="9" viewBox="0 0 7 10"><path d="M5.5 1L1.5 5l4 4" fill="none" stroke="#4a5d95" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            )
+            .join("");
+      }
+
+      /* ===== Interactive Modals Powered by Database ===== */
+      function openStat(index) {
+        const item = stats[index];
+        const title = document.getElementById("modal-title");
+        const body = document.getElementById("modal-body");
+        title.innerText = item.label;
+
+        if (item.id === "circulars") {
+          body.innerHTML = `
+      <div class="modal-item"><div><div class="modal-item-title">جدول المناوبة المدرسية والإشراف على الساحات</div><div class="modal-item-sub">منشور لجميع الهيئة التعليمية والإدارية</div></div><span style="font-weight:bold;color:#b8350e">منشور</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">ترشيح الطلاب المتفوقين لأولمبياد العلوم والرياضيات</div><div class="modal-item-sub">قسم العلوم والرياضيات · بانتظار الاعتماد النهائي</div></div><span style="font-weight:bold;color:#1d4ed8">منشور</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">موعد انعقاد مجلس الآباء والمعلمين للفصل الحالي</div><div class="modal-item-sub">إدارة المدرسة · دعوة عامة لأولياء الأمور</div></div><span style="font-weight:bold;color:#059669">منشور</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">خطة الاستعداد لاختبارات الفصل الدراسي الأول</div><div class="modal-item-sub">كافة الأقسام العلمية والأدبية ولجان الرصد</div></div><span style="font-weight:bold;color:#b8350e">منشور</span></div>
+    `;
+        } else if (item.id === "maintenance") {
+          body.innerHTML = `
+      <div class="modal-item"><div><div class="modal-item-title">عطل في وحدات التكييف المركزية بالصالة الرياضية</div><div class="modal-item-sub">تذكرة: MNT-2026-001 · تكييف وتبريد · أولوية طارئة</div></div><span style="color:#ef4444;font-weight:bold">قيد المعالجة</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">فحص شبكة الإضاءة والتحكم الصوتي بمسرح المدرسة</div><div class="modal-item-sub">تذكرة: MNT-2026-002 · كهرباء وإلكترونيات · أولوية عاجلة</div></div><span style="color:#f59e0b;font-weight:bold">مسند للفني</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">صيانة وتحديث توصيلات شبكة الإنترنت بمعمل الحاسب</div><div class="modal-item-sub">تذكرة: MNT-2026-003 · شبكات وتقنية معلومات</div></div><span style="color:#6366f1;font-weight:bold">تم الاستلام</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">صيانة صنابير ومحابس المياه بدورات مياه الدور الأرضي</div><div class="modal-item-sub">تذكرة: MNT-2026-004 · أعمال السباكة والصحية</div></div><span style="color:#10b981;font-weight:bold">مكتمل ومغلق</span></div>
+    `;
+        } else if (item.id === "calendar") {
+          body.innerHTML = `
+      <div class="modal-item"><div><div class="modal-item-title">بدء امتحانات منتصف الفصل الدراسي الأول</div><div class="modal-item-sub">1 نوفمبر 2026 · القاعات الامتحانية المجهزة</div></div><span style="color:#6e31a4;font-weight:bold">امتحانات</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">المعرض السنوي للعلوم ومشاريع الروبوت</div><div class="modal-item-sub">15 نوفمبر 2026 · مسرح المدرسة الرئيسي</div></div><span style="color:#2563eb;font-weight:bold">معرض</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">اجتماع الجمعية العمومية لمجلس الآباء والمعلمين</div><div class="modal-item-sub">20 نوفمبر 2026 · قاعة المؤتمرات الرئيسية</div></div><span style="color:#059669;font-weight:bold">اجتماع</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">اليوم الرياضي المدرسي والماراثون الخيري</div><div class="modal-item-sub">25 نوفمبر 2026 · الملاعب والصالة الرياضية</div></div><span style="color:#d97706;font-weight:bold">نشاط</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">اجتماع لجنة مراجعة الجودة والاعتماد الأكاديمي</div><div class="modal-item-sub">28 نوفمبر 2026 · غرفة الاجتماعات الإدارية</div></div><span style="color:#475569;font-weight:bold">إداري</span></div>
+    `;
+        } else {
+          body.innerHTML = `
+      <div class="modal-item"><div><div class="modal-item-title">المركز الأول في الأولمبياد الوطني للروبوت</div><div class="modal-item-sub">مسابقة الذكاء الاصطناعي على مستوى المحافظة · فريق العلوم</div></div><span style="color:#0e2a94;font-weight:bold">المركز 1 🥇</span></div>
+      <div class="modal-item"><div><div class="modal-item-title">كأس بطولة كرة القدم المدرسية</div><div class="modal-item-sub">6 انتصارات متتالية بدون أي هزيمة وتكريم أفضل لاعبة</div></div><span style="color:#0e2a94;font-weight:bold">كأس البطولة 🏆</span></div>
+    `;
+        }
+        document.getElementById("modal").classList.add("open");
+      }
+
+      function openActivity(index) {
+        const item = activities[index];
+        document.getElementById("modal-title").innerText = item.text;
+        document.getElementById("modal-body").innerHTML = `
+    <div style="font-size:13px;line-height:1.6;color:#334155;margin-bottom:12px">${item.desc}</div>
+    <div style="font-size:11px;color:#64748b;display:flex;justify-content:space-between">
+      <span>تحديث الحالة: ${item.time}</span>
+      <span style="color:#1d4ed8;font-weight:bold">بيانات قاعدة البيانات المباشرة</span>
+    </div>
+  `;
+        document.getElementById("modal").classList.add("open");
+      }
+
+      function openEvent(index) {
+        const item = events[index];
+        document.getElementById("modal-title").innerText = item.title;
+        document.getElementById("modal-body").innerHTML = `
+    <div style="font-size:13px;line-height:1.6;color:#334155;margin-bottom:12px">
+      فعالية رسمية معتمدة في التقويم المدرسي الموثق للعام الدراسي 2026/2027.
+    </div>
+    <div class="modal-item">
+      <div>
+        <div class="modal-item-title">الموعد والتاريخ: ${item.date}</div>
+        <div class="modal-item-sub">الموقع: ${item.loc}</div>
+      </div>
+      <span style="color:#059669;font-weight:bold">معتمد ومجدول</span>
+    </div>
+  `;
+        document.getElementById("modal").classList.add("open");
+      }
+
+      function openProfile() {
+        document.getElementById("modal-title").innerText = "الملف الإداري وبيانات المدرسة";
+        document.getElementById("modal-body").innerHTML = `
+    <div class="modal-item"><div><div class="modal-item-title">${schoolMeta.principal}</div><div class="modal-item-sub">${schoolMeta.role}</div></div><span style="color:#059669;font-weight:bold">نشط</span></div>
+    <div class="modal-item"><div><div class="modal-item-title">${schoolMeta.name_ar} (${schoolMeta.name_en})</div><div class="modal-item-sub">${schoolMeta.ministry} · العام الدراسي: ${schoolMeta.academic_year}</div></div><span>معتمد</span></div>
+    <div style="margin-top:10px;padding:10px;background:#f1f5f9;border-radius:8px">
+      <div style="font-size:11px;font-weight:bold;color:#1e293b;margin-bottom:4px">رؤية المدرسة:</div>
+      <div style="font-size:10.5px;color:#475569;line-height:1.5">${schoolMeta.vision}</div>
+      <div style="font-size:11px;font-weight:bold;color:#1e293b;margin-top:8px;margin-bottom:4px">رسالة المدرسة:</div>
+      <div style="font-size:10.5px;color:#475569;line-height:1.5">${schoolMeta.mission}</div>
+    </div>
+  `;
+        document.getElementById("modal").classList.add("open");
+      }
+
+      function closeModal(event) {
+        document.getElementById("modal").classList.remove("open");
+      }
+
+      /* ===== Toast Helper ===== */
+      let toastT;
+      function toast(msg) {
+        const el = document.getElementById("toast-el");
+        el.innerText = msg;
+        el.classList.add("show");
+        clearTimeout(toastT);
+        toastT = setTimeout(() => el.classList.remove("show"), 3000);
+      }
+
+      /* ===== Fit Stage to Window ===== */
+      function fit() {
+        const s = Math.min(window.innerWidth / 844, window.innerHeight / 491);
+        document.getElementById("stage").style.transform = `scale(${s})`;
+      }
+      window.addEventListener("resize", fit);
+
+      /* Initialize */
+      renderNav();
+      renderStats();
+      renderActivities();
+      renderEvents();
+      fit();
+    </script>
+  </body>
+</html>

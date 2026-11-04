@@ -1,0 +1,9 @@
+export { NewDashboardView } from "./NewDashboardView";
+export { NewDashboardHero } from "./NewDashboardHero";
+export { NewDashboardHeaderBar } from "./NewDashboardHeaderBar";
+export { NewDashboardSidebar } from "./NewDashboardSidebar";
+export { NewDashboardStats } from "./NewDashboardStats";
+export { NewDashboardCanvas } from "./NewDashboardCanvas";
+export { NewDashboardActivityList } from "./NewDashboardActivityList";
+export { NewDashboardEventList } from "./NewDashboardEventList";
+export { NewDashboardModal } from "./NewDashboardModal";

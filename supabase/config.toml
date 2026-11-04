@@ -1,0 +1,74 @@
+# Supabase local development configuration (skeleton — completed in WP2).
+project_id = "school-administration-portal"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "storage"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 17
+
+# Local-only demo data (supabase/seed.sql). Applied by `supabase db reset` and
+# never pushed to a linked project.
+[db.seed]
+enabled = false
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000", "http://127.0.0.1:3000"]
+jwt_expiry = 3600
+# No public sign-up: staff accounts are issued by school administrators (D3).
+# This is the GLOBAL signup switch; the email PROVIDER must stay enabled below.
+enable_signup = false
+
+[auth.email]
+# Keep the email provider enabled so administrator-issued accounts can sign in.
+# Setting this to false (the previous value) disabled email logins entirely,
+# breaking sign-in both locally and in any environment synced from this file.
+enable_signup = true
+# Staff accounts are created by admins, so no confirmation email is needed.
+enable_confirmations = false
+
+[storage]
+enabled = true
+file_size_limit = "10MiB"
+
+# Private buckets (doc §7). The public-assets bucket is created by migration
+# 0012; it is declared here too so a local `supabase start` matches production.
+[storage.buckets.circular-attachments]
+public = false
+file_size_limit = "10MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp", "application/pdf"]
+
+[storage.buckets.maintenance-photos]
+public = false
+file_size_limit = "10MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp"]
+
+[storage.buckets.public-assets]
+public = true
+file_size_limit = "5MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp"]
+
+[storage.buckets.school-documents]
+public = true
+file_size_limit = "20MiB"
+allowed_mime_types = ["image/jpeg", "image/png", "image/webp", "application/pdf"]
+
+[analytics]
+enabled = false
+
+[edge_runtime]
+enabled = false
+

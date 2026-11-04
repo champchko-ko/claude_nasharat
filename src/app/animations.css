@@ -1,0 +1,141 @@
+@keyframes heroFadeDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ambientPulse {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: translate(-50%, 0) scale(1);
+  }
+  50% {
+    opacity: 0.25;
+    transform: translate(-50%, 0) scale(1.06);
+  }
+}
+
+@keyframes gentleFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-hero-fade-down {
+  animation: heroFadeDown 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-hero-fade-up {
+  animation: heroFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-ambient-pulse {
+  animation: ambientPulse 8s ease-in-out infinite;
+}
+
+.animate-gentle-float {
+  animation: gentleFloat 6s ease-in-out infinite;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-150 {
+  animation-delay: 150ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-450 {
+  animation-delay: 450ms;
+}
+
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+.delay-750 {
+  animation-delay: 750ms;
+}
+
+.delay-900 {
+  animation-delay: 900ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-fade-down,
+  .animate-hero-fade-up,
+  .animate-ambient-pulse,
+  .animate-gentle-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@keyframes tickerLtr {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes tickerRtl {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.animate-ticker {
+  display: inline-block;
+  padding-inline-start: 100%;
+  animation: tickerLtr 28s linear infinite;
+}
+
+[dir="rtl"] .animate-ticker {
+  animation-name: tickerRtl;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ticker {
+    animation: none;
+    padding-inline-start: 0;
+  }
+}

@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="ar" dir="rtl" data-theme="al-nada">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>بوابة إدارة المدرسة | تجربة مستخدم إبداعية (Human-Centered UI/UX Prototype)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        /* Al-Nada Reference Theme (Royal Navy) */
+        --bg-canvas: #f4f7fc;
+        --bg-card: #ffffff;
+        --border-card: #e2e8f0;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+
+        --sidebar-bg: #0b2246;
+        --sidebar-text: #f8fafc;
+        --sidebar-active-bg: #1d4ed8;
+        --sidebar-active-text: #ffffff;
+        --sidebar-hover: #163761;
+        --sidebar-border: #133056;
+
+        --primary: #1d4ed8;
+        --primary-light: #eff6ff;
+        --accent-teal: #0d9488;
+        --accent-purple: #7c3aed;
+        --accent-amber: #f59e0b;
+        --accent-rose: #ef4444;
+        --accent-cyan: #0284c7;
+
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --shadow-soft:
+          0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        --shadow-hover:
+          0 10px 25px -4px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.04);
+        --font-family: "Cairo", "Plus Jakarta Sans", system-ui, sans-serif;
+      }
+
+      [data-theme="dark"] {
+        --bg-canvas: #090d16;
+        --bg-card: #111827;
+        --border-card: rgba(255, 255, 255, 0.08);
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --sidebar-bg: #070b14;
+        --sidebar-text: #f3f4f6;
+        --sidebar-active-bg: #2563eb;
+        --sidebar-active-text: #ffffff;
+        --sidebar-hover: #1e293b;
+        --sidebar-border: rgba(255, 255, 255, 0.08);
+        --primary-light: rgba(29, 78, 216, 0.18);
+      }
+
+      [data-theme="emerald"] {
+        --sidebar-bg: #064e3b;
+        --sidebar-hover: #0b634c;
+        --sidebar-active-bg: #10b981;
+        --sidebar-border: #0a5641;
+        --primary: #059669;
+        --primary-light: #ecfdf5;
+      }
+
+      [dir="ltr"] {
+        --font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition:
+          background-color 0.25s ease,
+          border-color 0.25s ease,
+          box-shadow 0.25s ease,
+          transform 0.2s ease;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--bg-canvas);
+        color: var(--text-main);
+        display: flex;
+        min-height: 100vh;
+        line-height: 1.5;
+        overflow-x: hidden;
+      }
+
+      /* ================= SIDEBAR ================= */
+      .sidebar {
+        width: 270px;
+        background: var(--sidebar-bg);
+        color: var(--sidebar-text);
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        border-inline-end: 1px solid var(--sidebar-border);
+        z-index: 40;
+        flex-shrink: 0;
+      }
+
+      .brand-header {
+        padding: 24px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        border-bottom: 1px solid var(--sidebar-border);
+      }
+
+      .brand-crest {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .brand-title {
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.3;
+        color: #ffffff;
+      }
+
+      .brand-subtitle {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.65);
+      }
+
+      .nav-list {
+        flex: 1;
+        padding: 20px 14px;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow-y: auto;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 11px 14px;
+        border-radius: var(--radius-sm);
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+
+      .nav-item:hover {
+        background: var(--sidebar-hover);
+        color: #ffffff;
+      }
+
+      .nav-item.active {
+        background: var(--sidebar-active-bg);
+        color: var(--sidebar-active-text);
+        font-weight: 700;
+        box-shadow: 0 4px 14px rgba(29, 78, 216, 0.35);
+      }
+
+      .nav-badge {
+        margin-inline-start: auto;
+        padding: 2px 7px;
+        border-radius: 9999px;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+
+      .sidebar-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--sidebar-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: rgba(255, 255, 255, 0.7);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 13px;
+      }
+
+      .logout-btn:hover {
+        color: #ef4444;
+      }
+
+      /* ================= MAIN CONTENT ================= */
+      .main-wrap {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      /* Top Navigation & Simulator Bar */
+      .topbar {
+        height: 72px;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border-card);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        backdrop-filter: blur(10px);
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .role-simulator-pills {
+        display: flex;
+        align-items: center;
+        background: var(--bg-canvas);
+        padding: 4px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-card);
+        gap: 4px;
+      }
+
+      .role-pill {
+        border: none;
+        background: none;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+      }
+
+      .role-pill.active {
+        background: var(--primary);
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(29, 78, 216, 0.25);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .interactive-btn {
+        background: var(--bg-canvas);
+        border: 1px solid var(--border-card);
+        color: var(--text-main);
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .interactive-btn:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .avatar-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 10px 4px 4px;
+        border-radius: 9999px;
+        background: var(--bg-canvas);
+        border: 1px solid var(--border-card);
+      }
+
+      .avatar-circle {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1d4ed8, #0d9488);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 14px;
+      }
+
+      .content-container {
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      /* ================= CREATIVE HUMAN UX: MORNING BRIEFING ================= */
+      .executive-briefing-card {
+        background: linear-gradient(135deg, #0b2246 0%, #153e75 100%);
+        color: #ffffff;
+        border-radius: var(--radius-lg);
+        padding: 24px 28px;
+        box-shadow: 0 10px 25px -5px rgba(11, 34, 70, 0.3);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .executive-briefing-card::after {
+        content: "";
+        position: absolute;
+        top: -60px;
+        inset-inline-end: -60px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(29, 78, 216, 0.4) 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .briefing-main h2 {
+        font-size: 20px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 6px;
+      }
+
+      .briefing-main p {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.85);
+        max-width: 650px;
+        line-height: 1.6;
+      }
+
+      .briefing-actions {
+        display: flex;
+        gap: 10px;
+        z-index: 2;
+      }
+
+      .briefing-btn-primary {
+        background: #ffffff;
+        color: #0b2246;
+        border: none;
+        padding: 10px 18px;
+        border-radius: var(--radius-sm);
+        font-family: inherit;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .briefing-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      }
+
+      /* ================= STATS CARDS GRID ================= */
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+      }
+
+      .kpi-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        cursor: pointer;
+      }
+
+      .kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary);
+      }
+
+      .kpi-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+      }
+
+      .kpi-title {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      .kpi-icon-wrap {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .kpi-number {
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 10px;
+        color: var(--text-main);
+      }
+
+      .kpi-footnote {
+        font-size: 11.5px;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: auto;
+      }
+
+      .progress-bar-bg {
+        height: 6px;
+        border-radius: 9999px;
+        background: #e2e8f0;
+        overflow: hidden;
+        margin-top: 8px;
+      }
+
+      .progress-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+        background: var(--accent-teal);
+        width: 86%;
+      }
+
+      /* ================= MIDDLE SECTION: SPLIT GRID ================= */
+      .middle-grid {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-card);
+        border-radius: var(--radius-md);
+        padding: 22px;
+        box-shadow: var(--shadow-soft);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .card-title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-main);
+      }
+
+      .card-action-link {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      /* Urgent Maintenance Table (Creative Visual Enhancement) */
+      .human-task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .human-task-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-radius: var(--radius-sm);
+        background: var(--bg-canvas);
+        border: 1px solid var(--border-card);
+      }
+
+      .human-task-row:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+      }
+
+      .task-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .priority-badge {
+        padding: 3px 9px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .priority-high {
+        background: #fee2e2;
+        color: #dc2626;
+      }
+
+      .priority-medium {
+        background: #fef3c7;
+        color: #d97706;
+      }
+
+      .priority-low {
+        background: #e0e7ff;
+        color: #4f46e5;
+      }
+
+      .task-title {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .task-location {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+
+      /* Donut Chart Visual Simulation */
+      .chart-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 12px 0;
+      }
+
+      .donut-graphic {
+        width: 150px;
+        height: 150px;
+        transform: rotate(-90deg);
+        border-radius: 50%;
+      }
+
+      .legend-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+
+      .legend-color {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+      }
+
+      .legend-val {
+        font-weight: 700;
+        color: var(--text-main);
+        margin-inline-start: auto;
+        padding-inline-start: 12px;
+      }
+
+      /* ================= CALENDAR PREVIEW ================= */
+      .calendar-strip {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .cal-day {
+        padding: 12px 8px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-card);
+        background: var(--bg-canvas);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+      }
+
+      .cal-day:hover,
+      .cal-day.active {
+        background: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+      }
+
+      .cal-day.active .cal-event-dot {
+        background: #ffffff;
+      }
+
+      .cal-weekday {
+        font-size: 11px;
+        color: inherit;
+        opacity: 0.8;
+      }
+
+      .cal-num {
+        font-size: 16px;
+        font-weight: 800;
+      }
+
+      .cal-event-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent-teal);
+      }
+
+      /* Toast Notification */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        inset-inline-end: 24px;
+        background: #0b2246;
+        color: #ffffff;
+        padding: 14px 20px;
+        border-radius: var(--radius-md);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13.5px;
+        font-weight: 600;
+        transform: translateY(120%);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 100;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .kpi-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .middle-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          display: none;
+        }
+        .kpi-grid {
+          grid-template-columns: 1fr;
+        }
+        .executive-briefing-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <div class="brand-crest">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#FFFFFF"
+            stroke-width="2"
+          >
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+            <path d="M6 6h10" />
+            <path d="M6 10h10" />
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title" id="school-title">مدرسة الندى الابتدائية</div>
+          <div class="brand-subtitle" id="school-sub">وزارة التعليم · الرياض</div>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li class="nav-item active" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          <span id="nav-dashboard">لوحة التحكم</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+            <polyline points="14 2 14 8 20 8" />
+            <line x1="16" x2="8" y1="13" y2="13" />
+            <line x1="16" x2="8" y1="17" y2="17" />
+            <line x1="10" x2="8" y1="9" y2="9" />
+          </svg>
+          <span id="nav-circulars">التعاميم والتكليفات</span>
+          <span class="nav-badge">12</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+            />
+          </svg>
+          <span id="nav-maintenance">طلبات الصيانة</span>
+          <span class="nav-badge" style="background: #ef4444">3</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+            <line x1="16" x2="16" y1="2" y2="6" />
+            <line x1="8" x2="8" y1="2" y2="6" />
+            <line x1="3" x2="21" y1="10" y2="10" />
+          </svg>
+          <span id="nav-calendar">رزنامة المدرسة</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+            <path d="M4 22h16" />
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+          </svg>
+          <span id="nav-achievements">سجل الإنجازات</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" x2="18" y1="20" y2="10" />
+            <line x1="12" x2="12" y1="20" y2="4" />
+            <line x1="6" x2="6" y1="20" y2="14" />
+          </svg>
+          <span id="nav-reports">التقارير والإحصاءات</span>
+        </li>
+        <li class="nav-item" onclick="selectNav(this)">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+            />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span id="nav-settings">الإعدادات والصلاحيات</span>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="logout-btn" onclick="triggerToast('تم تسجيل الخروج بنجاح')">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" x2="9" y1="12" y2="12" />
+          </svg>
+          <span id="nav-logout">تسجيل خروج</span>
+        </button>
+        <span>v2.4 Pro</span>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN WRAPPER ================= -->
+    <div class="main-wrap">
+      <!-- TOP INTERACTIVE SIMULATOR BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <!-- Human Role Simulation Switcher -->
+          <div class="role-simulator-pills">
+            <span
+              style="font-size: 11px; font-weight: 700; color: var(--text-muted); padding: 0 6px"
+              id="lbl-role"
+              >الدور:</span
+            >
+            <button class="role-pill active" onclick="switchRole('principal', this)">
+              مدير المدرسة 👑
+            </button>
+            <button class="role-pill" onclick="switchRole('dept_head', this)">رئيس قسم 📑</button>
+            <button class="role-pill" onclick="switchRole('teacher', this)">معلم 👨‍🏫</button>
+            <button class="role-pill" onclick="switchRole('tech', this)">فني صيانة 🔧</button>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Theme Toggle -->
+          <button class="interactive-btn" onclick="cycleTheme()" id="btn-theme">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" />
+              <path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" />
+              <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
+            <span id="theme-name">مظهر الندى</span>
+          </button>
+
+          <!-- RTL / LTR Language Toggle -->
+          <button class="interactive-btn" onclick="toggleLanguage()">
+            <span id="lang-label">English (LTR)</span>
+          </button>
+
+          <!-- Notification Bell -->
+          <button
+            class="interactive-btn"
+            style="padding: 8px; border-radius: 50%"
+            onclick="triggerToast('لديك 3 إشعارات جديدة')"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg>
+          </button>
+
+          <!-- User Profile Pill -->
+          <div class="avatar-pill">
+            <div class="avatar-circle">ن</div>
+            <div style="display: flex; flex-direction: column; text-align: start">
+              <span style="font-size: 13px; font-weight: 700; line-height: 1" id="user-name"
+                >أ. نورة القحطاني</span
+              >
+              <span style="font-size: 10.5px; color: var(--text-muted)" id="user-role-label"
+                >مديرة المدرسة</span
+              >
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT BODY -->
+      <main class="content-container">
+        <!-- 1. CREATIVE HUMAN UX: MORNING EXECUTIVE BRIEFING -->
+        <section class="executive-briefing-card" id="briefing-box">
+          <div class="briefing-main">
+            <h2>
+              <span>☀️</span>
+              <span id="greeting-title">صباح الخير، أ. نورة</span>
+            </h2>
+            <p id="greeting-desc">
+              لديك اليوم <strong>2 تعميم عاجل</strong> بانتظار توقيعكِ الإداري، و<strong
+                >طلب صيانة حرج</strong
+              >
+              (تسرب مياه في الفصل 1/3) يحتاج اعتماد أمر الإصلاح قبل بداية الحصة الثالثة.
+            </p>
+          </div>
+          <div class="briefing-actions">
+            <button
+              class="briefing-btn-primary"
+              onclick="triggerToast('تم توقيع واعتماد التعاميم العاجلة فوراً ✅')"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span id="btn-quick-sign">توقيع التعاميم دفعة واحدة</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 2. HIGH-IMPACT KPI METRICS -->
+        <section class="kpi-grid">
+          <!-- Completion Rate -->
+          <div class="kpi-card" onclick="triggerToast('نسبة الإنجاز أعلى بـ 8% عن الشهر الماضي')">
+            <div class="kpi-top">
+              <span class="kpi-title" id="kpi-1-t">نسبة الإنجاز العامة</span>
+              <div
+                class="kpi-icon-wrap"
+                style="background: rgba(13, 148, 136, 0.12); color: #0d9488"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                  <polyline points="16 7 22 7 22 13" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-number" style="color: #0d9488">86%</div>
+            <div class="kpi-footnote">
+              <span style="color: #0d9488; font-weight: 700">↑ +8%</span>
+              <span id="kpi-1-f">مقارنة بالشهر الماضي</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Overdue Tasks -->
+          <div class="kpi-card" onclick="triggerToast('3 طلبات تحتاج تدخلاً عاجلاً')">
+            <div class="kpi-top">
+              <span class="kpi-title" id="kpi-2-t">مهام متأخرة</span>
+              <div
+                class="kpi-icon-wrap"
+                style="background: rgba(239, 68, 68, 0.12); color: #ef4444"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-number" style="color: #ef4444">3</div>
+            <div class="kpi-footnote" style="color: #ef4444">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+                />
+                <line x1="12" x2="12" y1="9" y2="13" />
+                <line x1="12" x2="12.01" y1="17" y2="17" />
+              </svg>
+              <span id="kpi-2-f">تحتاج إلى متابعة عاجلة</span>
+            </div>
+          </div>
+
+          <!-- Maintenance Requests -->
+          <div class="kpi-card" onclick="triggerToast('8 طلبات صيانة مجدولة للأسبوع الحالي')">
+            <div class="kpi-top">
+              <span class="kpi-title" id="kpi-3-t">طلبات الصيانة</span>
+              <div
+                class="kpi-icon-wrap"
+                style="background: rgba(2, 132, 199, 0.12); color: #0284c7"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-number" style="color: #0284c7">8</div>
+            <div class="kpi-footnote">
+              <span id="kpi-3-f">طلبات قيد المعالجة من الفرق الفنية</span>
+            </div>
+          </div>
+
+          <!-- Open Circulars -->
+          <div class="kpi-card" onclick="triggerToast('12 تعميماً نشطاً بالمدرسة')">
+            <div class="kpi-top">
+              <span class="kpi-title" id="kpi-4-t">تعاميم مفتوحة</span>
+              <div
+                class="kpi-icon-wrap"
+                style="background: rgba(124, 58, 237, 0.12); color: #7c3aed"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+              </div>
+            </div>
+            <div class="kpi-number" style="color: #7c3aed">12</div>
+            <div class="kpi-footnote">
+              <span id="kpi-4-f">بانتظار الرد أو اعتماد الإجراء</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. WORKSPACE SPLIT: URGENT ACTION ITEMS + INTERACTIVE VISUAL BREAKDOWN -->
+        <section class="middle-grid">
+          <!-- Urgent Action Table -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span style="font-size: 18px">⚠️</span>
+                <span class="card-title" id="sec-urgent-title"
+                  >طلبات الصيانة العاجلة ذات الأولوية</span
+                >
+              </div>
+              <a
+                class="card-action-link"
+                onclick="triggerToast('عرض كل الطلبات')"
+                id="link-view-all"
+                >عرض الكل ←</a
+              >
+            </div>
+
+            <div class="human-task-list" id="task-list-container">
+              <!-- Row 1 -->
+              <div class="human-task-row">
+                <div class="task-meta">
+                  <span class="priority-badge priority-high">عالية جداً</span>
+                  <div>
+                    <div class="task-title">تسرب مياه في سقف الفصل 1/3</div>
+                    <div class="task-location">المبنى الرئيسي · الدور الأول · 18 مايو 2025</div>
+                  </div>
+                </div>
+                <button
+                  class="interactive-btn"
+                  onclick="triggerToast('تم تحويل البلاغ لفريق الطوارئ')"
+                >
+                  معالجة فورية
+                </button>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="human-task-row">
+                <div class="task-meta">
+                  <span class="priority-badge priority-high">عالية</span>
+                  <div>
+                    <div class="task-title">تعطل مكيف في مختبر العلوم</div>
+                    <div class="task-location">المبنى الرئيسي · المعمل 2 · 17 مايو 2025</div>
+                  </div>
+                </div>
+                <button class="interactive-btn" onclick="triggerToast('تم توجيه فني التكييف')">
+                  متابعة الفني
+                </button>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="human-task-row">
+                <div class="task-meta">
+                  <span class="priority-badge priority-medium">متوسطة</span>
+                  <div>
+                    <div class="task-title">مشكلة في الإضاءة - الممر الأول</div>
+                    <div class="task-location">المبنى الرئيسي · الدور الأرضي · 16 مايو 2025</div>
+                  </div>
+                </div>
+                <button class="interactive-btn" onclick="triggerToast('تمت جدولة الطلب')">
+                  جدولة
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donut Distribution Chart -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title-group">
+                <span style="font-size: 18px">📊</span>
+                <span class="card-title" id="sec-chart-title">ملخص الاستجابة حسب الجهة</span>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <svg class="donut-graphic" viewBox="0 0 36 36">
+                <!-- Background Circle -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#E2E8F0"
+                  stroke-width="3.8"
+                ></circle>
+                <!-- 35% Admin Navy -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#0B2246"
+                  stroke-width="3.8"
+                  stroke-dasharray="35 65"
+                  stroke-dashoffset="0"
+                ></circle>
+                <!-- 25% Safety Cyan -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#0284C7"
+                  stroke-width="3.8"
+                  stroke-dasharray="25 75"
+                  stroke-dashoffset="-35"
+                ></circle>
+                <!-- 20% Maintenance Purple -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#7C3AED"
+                  stroke-width="3.8"
+                  stroke-dasharray="20 80"
+                  stroke-dashoffset="-60"
+                ></circle>
+                <!-- 12% IT Amber -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#F59E0B"
+                  stroke-width="3.8"
+                  stroke-dasharray="12 88"
+                  stroke-dashoffset="-80"
+                ></circle>
+                <!-- 8% Student Affairs Green -->
+                <circle
+                  cx="18"
+                  cy="18"
+                  r="15.915"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="3.8"
+                  stroke-dasharray="8 92"
+                  stroke-dashoffset="-92"
+                ></circle>
+              </svg>
+
+              <div class="legend-list">
+                <div class="legend-item">
+                  <span class="legend-color" style="background: #0b2246"></span> الشؤون الإدارية
+                  <span class="legend-val">35%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background: #0284c7"></span> الأمن والسلامة
+                  <span class="legend-val">25%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background: #7c3aed"></span> الصيانة والمرافق
+                  <span class="legend-val">20%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background: #f59e0b"></span> تقنية المعلومات
+                  <span class="legend-val">12%</span>
+                </div>
+                <div class="legend-item">
+                  <span class="legend-color" style="background: #10b981"></span> شؤون الطلاب
+                  <span class="legend-val">8%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. ACTIVE SMART CALENDAR STRIP -->
+        <section class="card">
+          <div class="card-header">
+            <div class="card-title-group">
+              <span style="font-size: 18px">📅</span>
+              <span class="card-title" id="sec-cal-title"
+                >رزنامة الأحداث المدرسية - الأسبوع الحالي</span
+              >
+            </div>
+            <button class="interactive-btn" onclick="triggerToast('تم فتح محرر الرزنامة الكاملة')">
+              + إضافة حدث جديد
+            </button>
+          </div>
+
+          <div class="calendar-strip">
+            <div class="cal-day active" onclick="highlightDay(this, 'اجتماع مجلس الإدارة 10:00 ص')">
+              <span class="cal-weekday">الأحد</span>
+              <span class="cal-num">18</span>
+              <span class="cal-event-dot"></span>
+            </div>
+            <div class="cal-day" onclick="highlightDay(this, 'تسليم خطط الفصل 1:00 م')">
+              <span class="cal-weekday">الاثنين</span>
+              <span class="cal-num">19</span>
+              <span class="cal-event-dot"></span>
+            </div>
+            <div class="cal-day" onclick="highlightDay(this, 'ورشة التطوير المهني')">
+              <span class="cal-weekday">الثلاثاء</span>
+              <span class="cal-num">20</span>
+            </div>
+            <div class="cal-day" onclick="highlightDay(this, 'متابعة أعمال الصيانة الدورية')">
+              <span class="cal-weekday">الأربعاء</span>
+              <span class="cal-num">21</span>
+              <span class="cal-event-dot"></span>
+            </div>
+            <div class="cal-day" onclick="highlightDay(this, 'طابور النشاط الختامي')">
+              <span class="cal-weekday">الخميس</span>
+              <span class="cal-num">22</span>
+            </div>
+            <div class="cal-day" style="opacity: 0.5" onclick="triggerToast('عطلة نهاية الأسبوع')">
+              <span class="cal-weekday">الجمعة</span>
+              <span class="cal-num">23</span>
+            </div>
+            <div class="cal-day" style="opacity: 0.5" onclick="triggerToast('عطلة نهاية الأسبوع')">
+              <span class="cal-weekday">السبت</span>
+              <span class="cal-num">24</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="toast">
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#10B981"
+        stroke-width="2.5"
+      >
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+      <span id="toast-msg">تم الإجراء بنجاح</span>
+    </div>
+
+    <!-- ================= LOGIC & INTERACTION SCRIPTS ================= -->
+    <script>
+      // Theme cycling
+      const themes = ["al-nada", "dark", "emerald"];
+      let themeIndex = 0;
+
+      function cycleTheme() {
+        themeIndex = (themeIndex + 1) % themes.length;
+        const nextTheme = themes[themeIndex];
+        document.documentElement.setAttribute("data-theme", nextTheme);
+
+        const themeLabels = {
+          "al-nada": "كحلي ملكي (افتراضي)",
+          dark: "الوضع الداكن (سليت)",
+          emerald: "مظهر الزمرد الأكاديمي",
+        };
+        document.getElementById("theme-name").innerText = themeLabels[nextTheme];
+        triggerToast(`تم تفعيل: ${themeLabels[nextTheme]}`);
+      }
+
+      // Language Toggle (RTL / LTR)
+      let isAr = true;
+      function toggleLanguage() {
+        isAr = !isAr;
+        const html = document.documentElement;
+
+        if (isAr) {
+          html.setAttribute("dir", "rtl");
+          html.setAttribute("lang", "ar");
+          document.getElementById("lang-label").innerText = "English (LTR)";
+          document.getElementById("greeting-title").innerText = "صباح الخير، أ. نورة";
+          document.getElementById("greeting-desc").innerHTML =
+            "لديكِ اليوم <strong>2 تعميم عاجل</strong> بانتظار توقيعكِ الإداري، و<strong>طلب صيانة حرج</strong> يحتاج اعتماد أمر الإصلاح قبل بداية الحصة الثالثة.";
+          document.getElementById("btn-quick-sign").innerText = "توقيع التعاميم دفعة واحدة";
+          document.getElementById("nav-dashboard").innerText = "لوحة التحكم";
+          document.getElementById("nav-circulars").innerText = "التعاميم والتكليفات";
+          document.getElementById("nav-maintenance").innerText = "طلبات الصيانة";
+          document.getElementById("nav-calendar").innerText = "رزنامة المدرسة";
+          document.getElementById("nav-achievements").innerText = "سجل الإنجازات";
+          document.getElementById("nav-reports").innerText = "التقارير والإحصاءات";
+          document.getElementById("nav-settings").innerText = "الإعدادات والصلاحيات";
+          document.getElementById("nav-logout").innerText = "تسجيل خروج";
+          document.getElementById("school-title").innerText = "مدرسة الندى الابتدائية";
+          document.getElementById("school-sub").innerText = "وزارة التعليم · الرياض";
+        } else {
+          html.setAttribute("dir", "ltr");
+          html.setAttribute("lang", "en");
+          document.getElementById("lang-label").innerText = "العربية (RTL)";
+          document.getElementById("greeting-title").innerText = "Good Morning, Principal Noura";
+          document.getElementById("greeting-desc").innerHTML =
+            "You have <strong>2 urgent circulars</strong> awaiting administrative sign-off, and <strong>1 critical maintenance request</strong> needing work approval before Period 3.";
+          document.getElementById("btn-quick-sign").innerText = "Sign All Urgent Circulars";
+          document.getElementById("nav-dashboard").innerText = "Dashboard";
+          document.getElementById("nav-circulars").innerText = "Circulars & Duties";
+          document.getElementById("nav-maintenance").innerText = "Maintenance Orders";
+          document.getElementById("nav-calendar").innerText = "School Calendar";
+          document.getElementById("nav-achievements").innerText = "Achievements";
+          document.getElementById("nav-reports").innerText = "Reports & Analytics";
+          document.getElementById("nav-settings").innerText = "Settings & Security";
+          document.getElementById("nav-logout").innerText = "Sign Out";
+          document.getElementById("school-title").innerText = "Al-Nada Elementary School";
+          document.getElementById("school-sub").innerText = "Ministry of Education · Riyadh";
+        }
+        triggerToast(isAr ? "تم التحويل إلى اللغة العربية" : "Switched to English Layout");
+      }
+
+      // Role Simulator Switcher (How a human designer tailors UX per persona)
+      function switchRole(role, btn) {
+        document.querySelectorAll(".role-pill").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+
+        const greeting = document.getElementById("greeting-title");
+        const desc = document.getElementById("greeting-desc");
+        const userName = document.getElementById("user-name");
+        const userRole = document.getElementById("user-role-label");
+
+        if (role === "principal") {
+          userName.innerText = "أ. نورة القحطاني";
+          userRole.innerText = "مديرة المدرسة";
+          greeting.innerText = "صباح الخير، أ. نورة (مديرة المدرسة)";
+          desc.innerHTML =
+            "لديكِ <strong>2 تعميم وزاري</strong> بانتظار الاعتماد النهائي، ونسبة إنجاز الصيانة الأسبوعية بلغت <strong>86%</strong>.";
+          triggerToast("تم تفعيل وضع مديرة المدرسة (الرؤية التنفيذية الشاملة)");
+        } else if (role === "dept_head") {
+          userName.innerText = "أ. سارة المنصور";
+          userRole.innerText = "رئيسة قسم العلوم";
+          greeting.innerText = "مرحباً، أ. سارة (رئيسة قسم العلوم)";
+          desc.innerHTML =
+            "جميع معلمات القسم اطلعن على تعميم الاختبارات بنسبة <strong>100%</strong>. بانتظار إغلاق طلب صيانة المختبر رقم #104.";
+          triggerToast("تم تفعيل وضع رئيسة القسم (متابعة الامتثال والتكليفات)");
+        } else if (role === "teacher") {
+          userName.innerText = "أ. منى الشهري";
+          userRole.innerText = "معلمة رياضيات";
+          greeting.innerText = "أهلاً بكِ، أ. منى (معلمة)";
+          desc.innerHTML =
+            "حصتكِ القادمة هي <strong>رياضيات - الصف الخامس (ب)</strong> في تمام الساعة 9:15 ص. لديكِ تعميم جديد مطلوب تأكيد قراءته.";
+          triggerToast("تم تفعيل وضع المعلم (التركيز على الحصص والتعاميم المباشرة)");
+        } else if (role === "tech") {
+          userName.innerText = "م. فهد العتيبي";
+          userRole.innerText = "فني صيانة معتمد";
+          greeting.innerText = "مرحباً، م. فهد (فريق الصيانة والطوارئ)";
+          desc.innerHTML =
+            "لديك <strong>بلاغ حرج مباشر</strong>: تسرب مياه بسقف الفصل 1/3. انقر لبدء العمل وتحديث الحالة لحظياً.";
+          triggerToast("تم تفعيل وضع فني الصيانة (واجهة الأوامر السريعة)");
+        }
+      }
+
+      // Navigation item selector
+      function selectNav(element) {
+        document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
+        element.classList.add("active");
+      }
+
+      // Calendar day selector
+      function highlightDay(el, note) {
+        document.querySelectorAll(".cal-day").forEach((d) => d.classList.remove("active"));
+        el.classList.add("active");
+        triggerToast(`الحدث: ${note}`);
+      }
+
+      // Interactive Toast Notification
+      let toastTimeout;
+      function triggerToast(message) {
+        const toast = document.getElementById("toast");
+        const msg = document.getElementById("toast-msg");
+        msg.innerText = message;
+        toast.classList.add("show");
+
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          toast.classList.remove("show");
+        }, 3500);
+      }
+    </script>
+  </body>
+</html>

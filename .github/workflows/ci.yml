@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run test
+      - run: npm run scan:secrets
+      - run: npm run build
+
+  e2e:
+    # The journeys create users, schools and circulars, and NEXT_PUBLIC_* values
+    # are inlined at build time, so they need a real database. playwright.config
+    # reads the keys from `supabase status`, refuses non-loopback hosts, and
+    # builds the app itself with those keys — hence no separate `npm run build`.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+
+  rls:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      # Proves 0001 → latest applies from an empty database, not just on top of
+      # an already-migrated local volume.
+      - name: Rebuild the database from migrations
+        run: supabase db reset
+      - name: Run the RLS harness and authorization battery
+        # test:rls resolves the keys from the local CLI, asserts the host is
+        # loopback, and runs the harness before the battery.
+        run: npm run test:rls

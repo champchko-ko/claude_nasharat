@@ -1,0 +1,396 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "./animations.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --font-heading: var(--font-heading);
+  --font-artisan: var(--font-heading);
+  --font-human: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-scrim: var(--scrim);
+  --color-scrim-foreground: var(--scrim-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-gold: var(--gold);
+  --color-gold-foreground: var(--gold-foreground);
+  --color-icon-bg: var(--icon-bg);
+  --color-icon-bg-foreground: var(--icon-bg-foreground);
+  --color-action-foreground: var(--action-foreground);
+  --color-card-bar: var(--card-bar);
+  --color-card-bar-foreground: var(--card-bar-foreground);
+  --color-panel: var(--panel);
+  --color-nav-active-foreground: var(--nav-active-foreground);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root,
+.moe {
+  color-scheme: light;
+  --background: #ffffff;
+  --foreground: #0e121d;
+  --card: #f4f4f5;
+  --card-foreground: #0e121d;
+  --popover: #ffffff;
+  --popover-foreground: #0e121d;
+  --primary: #182c55;
+  --primary-foreground: #ffffff;
+  --secondary: #e4e9f2;
+  --secondary-foreground: #182c55;
+  --muted: #f1f1f1;
+  --muted-foreground: #4d5765;
+  --accent: #e4e9f2;
+  --accent-foreground: #182c55;
+  --gold: #ffcd35;
+  --gold-foreground: #182c55;
+  --icon-bg: #182c55;
+  --icon-bg-foreground: #ffcd35;
+  --destructive: #dc3545;
+  --destructive-foreground: #ffffff;
+  --success: #28a745;
+  --success-foreground: #ffffff;
+  --warning: #d97706;
+  --warning-foreground: #ffffff;
+  --info: #0b6eda;
+  --info-foreground: #ffffff;
+  --scrim: #0b1530;
+  --scrim-foreground: #ffffff;
+  --border: #e4e4e4;
+  --input: #c6cedd;
+  --ring: #0b6eda;
+  --chart-1: #182c55;
+  --chart-2: #48a0d8;
+  --chart-3: #7c3aed;
+  --chart-4: #ffcd35;
+  --chart-5: #4d5765;
+  --radius: 0.625rem;
+  --sidebar: #182c55;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #ffcd35;
+  --sidebar-primary-foreground: #182c55;
+  --sidebar-accent: #1d3666;
+  --sidebar-accent-foreground: #ffcd35;
+  --sidebar-border: #223259;
+  --sidebar-ring: #ffcd35;
+
+  /* MOE public-page tokens (services-guide look) */
+  --action-from: #0b63d6;
+  --action-to: #0a2f7a;
+  --action-foreground: #ffcd35;
+  --rule-from: #b88a2a;
+  --card-sheen: rgb(255 255 255 / 90%);
+  --card-bar: #e6e9f1;
+  --card-bar-foreground: #3d6db8;
+  --panel: #eef2f7;
+  --topbar-from: #0b1530;
+  --topbar-to: #14254a;
+  --nav-active-from: #0b63d6;
+  --nav-active-to: #0a2f7a;
+  --nav-active-foreground: #ffffff;
+}
+
+/* Restored portal themes. The root remains the MOE default. */
+.al-nada {
+  color-scheme: light;
+  --background: #f4f7fc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #1d4ed8;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #eff6ff;
+  --accent-foreground: #1e40af;
+  --destructive: #ef4444;
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #1d4ed8;
+  --sidebar: #0b2246;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #1d4ed8;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #163761;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #133056;
+  --sidebar-ring: #1d4ed8;
+}
+
+.light {
+  color-scheme: light;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --sidebar: oklch(0.18 0.015 260);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+.emerald {
+  color-scheme: light;
+  --background: #f6fbf7;
+  --foreground: #062b1b;
+  --card: #ffffff;
+  --card-foreground: #062b1b;
+  --popover: #ffffff;
+  --popover-foreground: #062b1b;
+  --primary: #059669;
+  --primary-foreground: #ffffff;
+  --secondary: #e6f4ea;
+  --secondary-foreground: #062b1b;
+  --muted: #edf7f0;
+  --muted-foreground: #476a59;
+  --accent: #d1fae5;
+  --accent-foreground: #047857;
+  --destructive: #dc2626;
+  --border: #d2e7d8;
+  --input: #b8dac2;
+  --ring: #059669;
+  --sidebar: #064e3b;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #10b981;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #0b634c;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #0a5641;
+  --sidebar-ring: #10b981;
+}
+
+.midnight {
+  color-scheme: dark;
+  --background: #020617;
+  --foreground: #f8fafc;
+  --card: #0b0f19;
+  --card-foreground: #f8fafc;
+  --popover: #0b0f19;
+  --popover-foreground: #f8fafc;
+  --primary: #06b6d4;
+  --primary-foreground: #020617;
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #1e293b;
+  --accent-foreground: #38bdf8;
+  --destructive: #f43f5e;
+  --border: rgb(255 255 255 / 12%);
+  --input: rgb(255 255 255 / 16%);
+  --ring: #06b6d4;
+  --sidebar: #050811;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #06b6d4;
+  --sidebar-primary-foreground: #020617;
+  --sidebar-accent: #0f172a;
+  --sidebar-accent-foreground: #38bdf8;
+  --sidebar-border: rgb(255 255 255 / 12%);
+  --sidebar-ring: #06b6d4;
+}
+
+/* Other themes: the MOE-only tokens fall back to each theme's own palette. */
+.al-nada,
+.light,
+.dark,
+.emerald,
+.midnight {
+  --icon-bg: #182c55;
+  --icon-bg-foreground: #ffcd35;
+  --action-from: var(--primary);
+  --action-to: var(--primary);
+  --action-foreground: var(--primary-foreground);
+  --rule-from: var(--primary);
+  --card-sheen: transparent;
+  --card-bar: var(--muted);
+  --card-bar-foreground: var(--muted-foreground);
+  --panel: var(--muted);
+  --topbar-from: var(--sidebar);
+  --topbar-to: var(--sidebar);
+  --nav-active-from: var(--sidebar-primary);
+  --nav-active-to: var(--sidebar-primary);
+  --nav-active-foreground: var(--sidebar-primary-foreground);
+}
+
+/* Dark themes: brighter status hues for AA contrast on dark surfaces. */
+.dark,
+.midnight {
+  --success: #4ade80;
+  --success-foreground: #052e16;
+  --warning: #fbbf24;
+  --warning-foreground: #451a03;
+  --info: #38bdf8;
+  --info-foreground: #082f49;
+  --chart-1: #60a5fa;
+  --chart-2: #38bdf8;
+  --chart-3: #a78bfa;
+  --chart-4: #fbbf24;
+  --chart-5: #34d399;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background font-sans text-foreground;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  html {
+    @apply font-sans;
+  }
+  .font-heading {
+    font-family: var(--font-heading), var(--font-sans), serif;
+  }
+  .font-artisan {
+    font-family: var(--font-heading), serif;
+  }
+  .font-human {
+    font-family: var(--font-human), var(--font-sans), system-ui, sans-serif;
+  }
+  button,
+  a,
+  [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* Universal Dropdown & Select Compatibility */
+  select {
+    color-scheme: light;
+    background-color: var(--card);
+    color: var(--foreground);
+  }
+
+  select option,
+  select optgroup {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
+  select option:checked {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  /*
+   * Icons across all pages and functions:
+   * Lucide and custom icons naturally inherit currentColor to match the text
+   * next to them and honor the active theme (MOE, Al-Nada, Light, Dark, Emerald, Midnight).
+   * Elements with explicit color utilities (.text-gold, .text-destructive, etc.)
+   * cleanly take their intended token.
+   */
+  svg.lucide,
+  svg.custom-doc-icon {
+    color: currentColor;
+  }
+
+  svg.lucide.text-gold,
+  svg.custom-doc-icon.text-gold {
+    color: var(--gold, #ffcd35) !important;
+  }
+
+  svg.lucide.text-destructive,
+  svg.lucide.text-destructive-foreground,
+  svg.lucide.text-red-500,
+  svg.lucide.text-red-600 {
+    color: var(--destructive, #dc3545) !important;
+  }
+}
