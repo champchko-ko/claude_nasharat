@@ -55,3 +55,4 @@ supabase/.temp/
 supabase/.branches/
 
 .vercel
+phase*.zip
