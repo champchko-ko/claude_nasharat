@@ -4,7 +4,6 @@ import { revalidateSettingsPath } from "@/lib/settings/revalidateSettingsPath";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { getCurrentProfile } from "@/lib/auth/getCurrentProfile";
 import { isPlatformOwner } from "@/lib/auth/isPlatformOwner";
-import { resolveSchoolForCaller } from "@/lib/school/resolveSchoolForCaller";
 import { executeUserDissociationFallback } from "./executeUserDissociationFallback";
 import { assertCanDeleteUser } from "./assertCanDeleteUser";
 import { AuthenticationError } from "@/lib/errors/AuthenticationError";
@@ -23,12 +22,10 @@ export async function deleteUserAction(userId: string): Promise<ActionResult> {
       isPlatformOwner(userId),
     ]);
 
-    const callerSchoolId = profile.school_id ?? (await resolveSchoolForCaller(profile));
-
-    await assertCanDeleteUser(profile.id, userId, isOwner, isTargetOwner, callerSchoolId);
+    await assertCanDeleteUser(profile.id, userId, isOwner, isTargetOwner);
 
     const admin = createSupabaseAdminClient({ actorId: profile.id });
-    await executeUserDissociationFallback(admin, userId, isOwner, callerSchoolId);
+    await executeUserDissociationFallback(admin, userId);
 
     revalidateSettingsPath("users");
     return { success: true };

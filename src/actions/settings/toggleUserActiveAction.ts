@@ -4,8 +4,6 @@ import { revalidateSettingsPath } from "@/lib/settings/revalidateSettingsPath";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { getCurrentProfile } from "@/lib/auth/getCurrentProfile";
 import { isPlatformOwner } from "@/lib/auth/isPlatformOwner";
-import { resolveSchoolForCaller } from "@/lib/school/resolveSchoolForCaller";
-import { assertNotLastActiveSchoolAdmin } from "@/lib/school/assertNotLastActiveSchoolAdmin";
 import { assertCanToggleUserActive } from "./assertCanToggleUserActive";
 import {
   sanitizeError,
@@ -31,39 +29,22 @@ export async function toggleUserActiveAction(
       isPlatformOwner(targetUserId),
     ]);
 
-    const callerSchoolId = profile.school_id ?? (await resolveSchoolForCaller(profile));
-
-    await assertCanToggleUserActive(
-      profile.id,
-      targetUserId,
-      isOwner,
-      isTargetOwner,
-      callerSchoolId,
-    );
+    await assertCanToggleUserActive(profile.id, targetUserId, isOwner, isTargetOwner);
 
     const admin = createSupabaseAdminClient({ actorId: profile.id });
-
-    if (currentStatus && !isOwner) {
-      await assertNotLastActiveSchoolAdmin(admin, targetUserId);
-    }
-
-    const updateQuery = admin
+    const { data: updated, error } = await admin
       .from("profiles")
       .update({ is_active: !currentStatus })
-      .eq("id", targetUserId);
-
-    if (!isOwner && callerSchoolId) {
-      updateQuery.eq("school_id", callerSchoolId);
-    }
-
-    const { data: updated, error } = await updateQuery.select("id").maybeSingle();
+      .eq("id", targetUserId)
+      .select("id")
+      .maybeSingle();
 
     if (error) {
       throw mapDatabaseError(error);
     }
 
     if (!updated) {
-      throw new NotFoundError("User not found in this school");
+      throw new NotFoundError("User not found");
     }
 
     revalidateSettingsPath("users");

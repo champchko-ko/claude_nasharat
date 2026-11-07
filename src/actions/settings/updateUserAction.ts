@@ -4,7 +4,7 @@ import { revalidateSettingsPath } from "@/lib/settings/revalidateSettingsPath";
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { validateUserUpdateInput } from "@/lib/school/validateUserUpdateInput";
 import { assertCanManageUser } from "@/lib/school/assertCanManageUser";
-import { assertDepartmentBelongsToSchool } from "@/lib/school/assertDepartmentBelongsToSchool";
+import { assertDepartmentExists } from "@/lib/school/assertDepartmentExists";
 import { persistUserUpdates } from "@/lib/school/persistUserUpdates";
 import { applyUserRoleUpdate } from "@/lib/school/applyUserRoleUpdate";
 import { recordCredentialAudit } from "@/lib/audit/recordCredentialAudit";
@@ -32,7 +32,7 @@ export type UpdateUserInput = {
 export async function updateUserAction(input: UpdateUserInput): Promise<ActionResult> {
   try {
     const check = await assertCanManageUser(input.userId, input.roleKey);
-    if (!check.allowed || !check.schoolId || !check.currentUserId) {
+    if (!check.allowed || !check.currentUserId) {
       throw new ForbiddenError(check.error || "Unauthorized");
     }
 
@@ -46,17 +46,16 @@ export async function updateUserAction(input: UpdateUserInput): Promise<ActionRe
       throw new ValidationError(val.error || "Invalid user input");
     }
 
-    await assertDepartmentBelongsToSchool(input.departmentId, check.schoolId);
+    await assertDepartmentExists(input.departmentId);
 
     const adminClient = createSupabaseAdminClient({ actorId: check.currentUserId });
-    const res = await persistUserUpdates(adminClient, check.schoolId, input);
+    const res = await persistUserUpdates(adminClient, input);
     if (!res.success) {
       throw mapDatabaseError(res.error, "Failed to update user");
     }
 
     await applyUserRoleUpdate(
       input.userId,
-      check.schoolId,
       check.currentUserId,
       input.roleKey,
       input.departmentId,
@@ -64,7 +63,6 @@ export async function updateUserAction(input: UpdateUserInput): Promise<ActionRe
 
     if (input.password) {
       await recordCredentialAudit({
-        schoolId: check.schoolId,
         actorId: check.currentUserId,
         action: "credentials.password_reset",
         entityId: input.userId,
