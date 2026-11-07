@@ -7,11 +7,6 @@ export type ProfileRow = {
   full_name: string;
   email: string | null;
   job_title: string | null;
-  /**
-   * @deprecated There is one school per deployment, so profiles no longer carry a
-   * school id. Always `null`. Kept only so call sites written for the multi-tenant
-   * schema keep compiling until their modules are migrated; removed with the last one.
-   */
   school_id: string | null;
   department_id: string | null;
   department_name_ar?: string | null;
@@ -28,7 +23,7 @@ export async function getCurrentProfile(): Promise<ProfileRow | null> {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, email, job_title, department_id, is_active, departments!profiles_department_id_fkey(id, name_ar, name_en)",
+      "id, full_name, email, job_title, school_id, department_id, is_active, departments!profiles_department_id_fkey(id, name_ar, name_en)",
     )
     .eq("id", userData.user.id)
     .maybeSingle();
