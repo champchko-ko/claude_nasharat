@@ -27,7 +27,7 @@ describe("getSchoolDepartments", () => {
 
     await expect(getSchoolDepartments()).resolves.toHaveLength(1);
     await expect(getSchoolDepartments("legacy-school")).resolves.toHaveLength(1);
-    expect(select.mock.calls[0][0]).not.toContain("school_id");
+    expect(select).toHaveBeenCalledWith(expect.not.stringContaining("school_id"));
   });
 
   it("returns an empty list when there are none", async () => {

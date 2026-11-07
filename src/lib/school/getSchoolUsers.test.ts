@@ -42,8 +42,8 @@ describe("getSchoolUsers", () => {
     const users = await getSchoolUsers("legacy-school-id");
 
     expect(users.map((u) => u.id)).toEqual(["a", "b"]);
-    expect(select.mock.calls[0][0]).not.toContain("school_id");
-    expect(select.mock.calls[0][0]).toContain("roles(key)");
+    expect(select).toHaveBeenCalledWith(expect.stringContaining("roles(key)"));
+    expect(select).toHaveBeenCalledWith(expect.not.stringContaining("school_id"));
   });
 
   it("hides owner accounts", async () => {
