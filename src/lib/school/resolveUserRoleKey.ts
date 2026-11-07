@@ -1,5 +1,5 @@
 type RoleAssignment = {
-  roles: { key: string } | null;
+  roles: { key: string; name: string } | null;
 };
 
 export function resolveUserRoleKey(assignments?: RoleAssignment[] | null): string | null {

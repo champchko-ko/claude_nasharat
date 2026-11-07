@@ -16,6 +16,7 @@ describe("mapSchoolUserRows", () => {
         {
           roles: {
             key: "owner",
+            name: "Application Owner",
           },
         },
       ],
@@ -36,6 +37,7 @@ describe("mapSchoolUserRows", () => {
         {
           roles: {
             key: "department_head",
+            name: "Department Head",
           },
         },
       ],
@@ -53,6 +55,7 @@ describe("mapSchoolUserRows", () => {
         {
           roles: {
             key: "school_admin",
+            name: "School Administrator",
           },
         },
       ],
@@ -104,6 +107,7 @@ describe("mapSchoolUserRows", () => {
           {
             roles: {
               key: "staff",
+              name: "Staff",
             },
           },
         ],

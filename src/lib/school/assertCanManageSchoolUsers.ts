@@ -4,17 +4,18 @@ import { AuthenticationError } from "@/lib/errors/AuthenticationError";
 import { ForbiddenError } from "@/lib/errors/ForbiddenError";
 
 export async function assertCanManageSchoolUsers(): Promise<{
+  schoolId: string;
   profileId: string;
 }> {
   const profile = await getCurrentProfile();
-  if (!profile) {
-    throw new AuthenticationError("Authentication required");
+  if (!profile?.school_id) {
+    throw new AuthenticationError("No school associated with profile");
   }
 
-  const allowed = await hasPermission("users.manage");
+  const allowed = await hasPermission("users.manage", profile.school_id);
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }
 
-  return { profileId: profile.id };
+  return { schoolId: profile.school_id, profileId: profile.id };
 }
