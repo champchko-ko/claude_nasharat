@@ -2,7 +2,6 @@ import { createSupabaseAdminClient } from "@/lib/supabase/createSupabaseAdminCli
 import { logError } from "@/lib/logger";
 
 export type CredentialAuditInput = {
-  /** @deprecated There is one school; audit rows carry no school id. Ignored. */
   schoolId?: string | null;
   actorId: string;
   actorLabel?: string | null;
@@ -18,6 +17,7 @@ export async function recordCredentialAudit(input: CredentialAuditInput): Promis
   });
 
   const { error } = await admin.from("audit_logs").insert({
+    school_id: input.schoolId ?? null,
     actor_id: input.actorId,
     actor_label: input.actorLabel ?? null,
     action: input.action,
