@@ -10,7 +10,6 @@ export type ProvisionUserParams = {
   jobTitle?: string | null;
   departmentId?: string | null;
   roleKey: string;
-  schoolId: string;
   callerId: string;
 };
 
@@ -29,7 +28,6 @@ export async function provisionAuthUser(params: ProvisionUserParams) {
     email: params.email,
     job_title: params.jobTitle?.trim() || null,
     department_id: params.departmentId || null,
-    school_id: params.schoolId,
     is_active: true,
     invited_by: params.callerId,
   });
@@ -40,14 +38,7 @@ export async function provisionAuthUser(params: ProvisionUserParams) {
   }
 
   try {
-    await assignUserRole(
-      admin,
-      userId,
-      params.schoolId,
-      params.callerId,
-      params.roleKey,
-      params.departmentId,
-    );
+    await assignUserRole(admin, userId, params.callerId, params.roleKey, params.departmentId);
   } catch (roleErr) {
     await rollbackProvisionedUser(admin, userId);
     return {

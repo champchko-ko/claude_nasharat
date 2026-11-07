@@ -5,7 +5,6 @@ export type RawProfileResult = {
   full_name: string;
   email: string | null;
   job_title: string | null;
-  school_id: string | null;
   department_id: string | null;
   is_active: boolean;
   departments: { id: string; name_ar: string; name_en: string } | null;
@@ -21,7 +20,7 @@ export function toProfileRow(row: RawProfileResult): ProfileRow {
     full_name: row.full_name,
     email: row.email,
     job_title: row.job_title,
-    school_id: row.school_id,
+    school_id: null,
     department_id: row.department_id,
     department_name_ar: nameAr,
     department_name_en: nameEn,

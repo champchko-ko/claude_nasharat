@@ -1,5 +1,4 @@
 import { hasPermission } from "@/lib/rbac/hasPermission";
-import { AuthenticationError } from "@/lib/errors/AuthenticationError";
 import { ForbiddenError } from "@/lib/errors/ForbiddenError";
 import { ValidationError } from "@/lib/errors/ValidationError";
 
@@ -8,7 +7,6 @@ export async function assertCanToggleUserActive(
   targetUserId: string,
   isOwner: boolean,
   isTargetOwner: boolean,
-  callerSchoolId: string | null,
 ): Promise<void> {
   if (callerId === targetUserId) {
     throw new ValidationError("Cannot change your own active status");
@@ -22,11 +20,7 @@ export async function assertCanToggleUserActive(
     return;
   }
 
-  if (!callerSchoolId) {
-    throw new AuthenticationError("No school associated with profile");
-  }
-
-  const allowed = await hasPermission("users.manage", callerSchoolId);
+  const allowed = await hasPermission("users.manage");
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }

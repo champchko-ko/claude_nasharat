@@ -31,7 +31,7 @@ vi.mock("@/lib/supabase", () => ({
 
 import { assertCanManageUser } from "./assertCanManageUser";
 
-const caller = { id: "caller", school_id: "school-1", is_active: true };
+const caller = { id: "caller", school_id: null, is_active: true };
 
 describe("assertCanManageUser", () => {
   beforeEach(() => {
@@ -41,42 +41,32 @@ describe("assertCanManageUser", () => {
     mockIsOwner.mockResolvedValue(false);
   });
 
-  it("rejects a target user from another school (C-1)", async () => {
-    mockMaybeSingle.mockResolvedValue({
-      data: { id: "foreign-user", school_id: "school-2" },
-      error: null,
-    });
+  it("requires a signed-in caller", async () => {
+    mockGetProfile.mockResolvedValue(null);
 
-    const result = await assertCanManageUser("foreign-user");
+    const result = await assertCanManageUser("colleague");
 
-    expect(result.allowed).toBe(false);
-    expect(mockIsOwner).not.toHaveBeenCalled();
+    expect(result).toEqual({ allowed: false, error: "Authentication required" });
   });
 
-  it("rejects a target that cannot be read (RLS hides foreign rows)", async () => {
+  it("rejects a target that cannot be read", async () => {
     mockMaybeSingle.mockResolvedValue({ data: null, error: null });
 
     const result = await assertCanManageUser("unknown-user");
 
-    expect(result.allowed).toBe(false);
+    expect(result).toEqual({ allowed: false, error: "User not found" });
   });
 
-  it("allows a target in the caller's school", async () => {
-    mockMaybeSingle.mockResolvedValue({
-      data: { id: "colleague", school_id: "school-1" },
-      error: null,
-    });
+  it("allows an existing, ordinary target", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { id: "colleague" }, error: null });
 
     const result = await assertCanManageUser("colleague");
 
-    expect(result).toEqual({ allowed: true, schoolId: "school-1", currentUserId: "caller" });
+    expect(result).toEqual({ allowed: true, currentUserId: "caller" });
   });
 
-  it("never allows modifying a platform owner", async () => {
-    mockMaybeSingle.mockResolvedValue({
-      data: { id: "owner", school_id: "school-1" },
-      error: null,
-    });
+  it("never allows modifying an owner account", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { id: "owner" }, error: null });
     mockIsOwner.mockResolvedValue(true);
 
     const result = await assertCanManageUser("owner");
@@ -91,5 +81,13 @@ describe("assertCanManageUser", () => {
 
     expect(result.allowed).toBe(false);
     expect(mockMaybeSingle).not.toHaveBeenCalled();
+  });
+
+  it("refuses a non-owner who tries to give someone the owner role", async () => {
+    mockMaybeSingle.mockResolvedValue({ data: { id: "colleague" }, error: null });
+
+    const result = await assertCanManageUser("colleague", "owner");
+
+    expect(result).toEqual({ allowed: false, error: "Invalid role selection" });
   });
 });
