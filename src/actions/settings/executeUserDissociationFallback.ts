@@ -2,15 +2,13 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { verifyTargetDeletable } from "./verifyTargetDeletable";
 import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
-/**
- * Permanently removes a user: their role, the rows that would block the delete,
- * their profile and their sign-in account.
- */
 export async function executeUserDissociationFallback(
   admin: SupabaseClient,
   userId: string,
+  isOwner: boolean,
+  callerSchoolId: string | null,
 ): Promise<void> {
-  await verifyTargetDeletable(admin, userId);
+  await verifyTargetDeletable(admin, userId, isOwner, callerSchoolId);
 
   // 1. Remove user role assignments
   await admin.from("user_role_assignments").delete().eq("user_id", userId);
