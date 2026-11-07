@@ -10,7 +10,7 @@ export type RawProfileQueryResult = {
   is_active: boolean;
   departments: { name_ar: string; name_en: string } | null;
   user_role_assignments: Array<{
-    roles: { key: string; name: string } | null;
+    roles: { key: string } | null;
   }> | null;
 };
 
