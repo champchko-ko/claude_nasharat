@@ -2,15 +2,19 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { ForbiddenError } from "@/lib/errors/ForbiddenError";
 import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
+/**
+ * Only the owner edits roles and their permissions, system roles included.
+ * The owner role itself is locked and can never be edited.
+ * Returns whether the role is a system role (system role names are not edited).
+ */
 export async function assertCanUpdateRoleRecord(
   supabase: SupabaseClient,
   roleId: string,
-  schoolId: string | null,
   isOwner = false,
-): Promise<void> {
+): Promise<{ isSystem: boolean }> {
   const { data: role, error: roleError } = await supabase
     .from("roles")
-    .select("id, is_system, school_id")
+    .select("id, is_system, is_locked")
     .eq("id", roleId)
     .maybeSingle();
 
@@ -22,12 +26,13 @@ export async function assertCanUpdateRoleRecord(
     throw new ForbiddenError("Role not found");
   }
 
-  // The platform owner has full control over all roles (including system roles)
-  if (isOwner) {
-    return;
+  if (!isOwner) {
+    throw new ForbiddenError("Only the owner can modify roles");
   }
 
-  if (role.is_system || role.school_id !== schoolId) {
-    throw new ForbiddenError("Cannot modify system or unauthorized roles");
+  if (role.is_locked) {
+    throw new ForbiddenError("The owner role is locked and cannot be modified");
   }
+
+  return { isSystem: Boolean(role.is_system) };
 }

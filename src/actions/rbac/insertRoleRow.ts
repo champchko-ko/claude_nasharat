@@ -5,16 +5,17 @@ export async function insertRoleRow(
   params: {
     name: string;
     key: string;
-    schoolId: string;
     permissionKeys: string[];
   },
 ) {
+  // The role screens take one name; both language columns get it. The owner can
+  // give a custom role different Arabic and English names later.
   const { data: newRole, error: roleError } = await supabase
     .from("roles")
     .insert({
-      name: params.name,
+      name_ar: params.name,
+      name_en: params.name,
       key: params.key,
-      school_id: params.schoolId,
       is_system: false,
     })
     .select("id")

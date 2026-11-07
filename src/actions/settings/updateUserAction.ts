@@ -5,7 +5,6 @@ import { createSupabaseAdminClient } from "@/lib/supabase";
 import { validateUserUpdateInput } from "@/lib/school/validateUserUpdateInput";
 import { assertCanManageUser } from "@/lib/school/assertCanManageUser";
 import { assertDepartmentExists } from "@/lib/school/assertDepartmentExists";
-import { getFirstActiveSchoolId } from "@/lib/school/getFirstActiveSchoolId";
 import { persistUserUpdates } from "@/lib/school/persistUserUpdates";
 import { applyUserRoleUpdate } from "@/lib/school/applyUserRoleUpdate";
 import { recordCredentialAudit } from "@/lib/audit/recordCredentialAudit";
@@ -55,13 +54,8 @@ export async function updateUserAction(input: UpdateUserInput): Promise<ActionRe
       throw mapDatabaseError(res.error, "Failed to update user");
     }
 
-    const schoolId = await getFirstActiveSchoolId();
-    if (!schoolId) {
-      throw new ValidationError("No active school is configured");
-    }
     await applyUserRoleUpdate(
       input.userId,
-      schoolId,
       check.currentUserId,
       input.roleKey,
       input.departmentId,

@@ -1,26 +1,20 @@
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
-/**
- * The caller's effective permission keys.
- *
- * Passing a school restricts the result to platform-wide assignments plus the
- * assignments held in that school (migration 0048, finding M10). Omitting it
- * returns everything the caller holds anywhere, which is only appropriate for
- * platform-level checks.
- */
-export async function getEffectivePermissions(schoolId?: string | null): Promise<string[]> {
+async function loadEffectivePermissions(): Promise<string[]> {
   const supabase = await createSupabaseServerClient();
-  const { data, error } = await supabase.rpc(
-    "effective_permission_keys",
-    schoolId ? { p_school: schoolId } : undefined,
-  );
-  if (error) {
-    if (schoolId && error.code === "PGRST202") {
-      const fallback = await supabase.rpc("effective_permission_keys");
-      if (!fallback.error) return (fallback.data ?? []) as string[];
-    }
-    throw mapDatabaseError(error, "Failed to load permissions");
-  }
+  const { data, error } = await supabase.rpc("effective_permission_keys");
+  if (error) throw mapDatabaseError(error, "Failed to load permissions");
   return (data ?? []) as string[];
 }
+
+/**
+ * Every permission key the signed-in user holds. The owner receives the whole
+ * catalogue; everyone else receives what the owner granted their role.
+ *
+ * The optional argument exists only so call sites written for the
+ * multi-tenant schema keep compiling while `school_id` is removed module by
+ * module. It is ignored.
+ */
+export const getEffectivePermissions: (legacySchoolId?: string | null) => Promise<string[]> =
+  loadEffectivePermissions;

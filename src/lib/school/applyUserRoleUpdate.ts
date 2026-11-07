@@ -3,7 +3,6 @@ import { assignUserRole } from "./assignUserRole";
 
 export async function applyUserRoleUpdate(
   userId: string,
-  schoolId: string,
   callerId: string,
   roleKey?: string | null,
   departmentId?: string | null,
@@ -11,5 +10,5 @@ export async function applyUserRoleUpdate(
   if (!roleKey) return;
 
   const supabase = await createSupabaseServerClient();
-  await assignUserRole(supabase, userId, schoolId, callerId, roleKey, departmentId);
+  await assignUserRole(supabase, userId, callerId, roleKey, departmentId);
 }

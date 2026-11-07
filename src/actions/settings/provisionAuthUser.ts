@@ -1,6 +1,5 @@
 import { createSupabaseAdminClient } from "@/lib/supabase";
 import { assignUserRole } from "@/lib/school/assignUserRole";
-import { getFirstActiveSchoolId } from "@/lib/school/getFirstActiveSchoolId";
 import { rollbackProvisionedUser } from "./rollbackProvisionedUser";
 import { createProvisionedAuthUser } from "./createProvisionedAuthUser";
 
@@ -39,18 +38,7 @@ export async function provisionAuthUser(params: ProvisionUserParams) {
   }
 
   try {
-    const schoolId = await getFirstActiveSchoolId();
-    if (!schoolId) {
-      throw new Error("No active school is configured");
-    }
-    await assignUserRole(
-      admin,
-      userId,
-      schoolId,
-      params.callerId,
-      params.roleKey,
-      params.departmentId,
-    );
+    await assignUserRole(admin, userId, params.callerId, params.roleKey, params.departmentId);
   } catch (roleErr) {
     await rollbackProvisionedUser(admin, userId);
     return {

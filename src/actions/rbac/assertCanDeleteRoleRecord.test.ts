@@ -2,104 +2,59 @@ import { describe, it, expect, vi } from "vitest";
 import { assertCanDeleteRoleRecord } from "./assertCanDeleteRoleRecord";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+function clientWith(role: unknown, assignments: unknown[] = []) {
+  const rolesMock = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    maybeSingle: vi.fn().mockResolvedValue({ data: role, error: null }),
+  };
+  const uraMock = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockResolvedValue({ data: assignments, error: null }),
+  };
+  return {
+    from: vi.fn((table: string) => {
+      if (table === "roles") return rolesMock;
+      if (table === "user_role_assignments") return uraMock;
+      return {};
+    }),
+  } as unknown as SupabaseClient;
+}
+
+const customRole = { id: "c1", key: "electrician", is_system: false, is_locked: false };
+
 describe("assertCanDeleteRoleRecord", () => {
-  it("allows owner to delete an unassigned role including system role", async () => {
-    const rolesMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({
-        data: { id: "sys-role-1", key: "operator", is_system: true, school_id: null },
-        error: null,
-      }),
-    };
-    const uraMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockResolvedValue({ data: [], error: null }),
-    };
-
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === "roles") return rolesMock;
-        if (table === "user_role_assignments") return uraMock;
-        return {};
-      }),
-    } as unknown as SupabaseClient;
-
-    const res = await assertCanDeleteRoleRecord(supabase, "sys-role-1", "school-1", true);
+  it("lets the owner delete an unassigned custom role", async () => {
+    const res = await assertCanDeleteRoleRecord(clientWith(customRole), "c1", true);
     expect(res.allowed).toBe(true);
   });
 
-  it("blocks deleting the platform owner role even by owner", async () => {
-    const rolesMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({
-        data: { id: "owner-role-id", key: "owner", is_system: true, school_id: null },
-        error: null,
-      }),
-    };
-
-    const supabase = {
-      from: vi.fn(() => rolesMock),
-    } as unknown as SupabaseClient;
-
-    const res = await assertCanDeleteRoleRecord(supabase, "owner-role-id", "school-1", true);
-    expect(res.allowed).toBe(false);
-    expect(res.error).toBe("Cannot delete the platform owner role");
+  it("refuses everyone but the owner", async () => {
+    const res = await assertCanDeleteRoleRecord(clientWith(customRole), "c1", false);
+    expect(res).toEqual({ allowed: false, error: "Only the owner can delete roles" });
   });
 
-  it("blocks deleting a role that has active user assignments", async () => {
-    const rolesMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({
-        data: {
-          id: "role-with-users",
-          key: "custom_role",
-          is_system: false,
-          school_id: "school-1",
-        },
-        error: null,
-      }),
-    };
-    const uraMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      limit: vi.fn().mockResolvedValue({ data: [{ id: "assignment-1" }], error: null }),
-    };
-
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === "roles") return rolesMock;
-        if (table === "user_role_assignments") return uraMock;
-        return {};
-      }),
-    } as unknown as SupabaseClient;
-
-    const res = await assertCanDeleteRoleRecord(supabase, "role-with-users", "school-1", true);
-    expect(res.allowed).toBe(false);
-    expect(res.error).toBe(
-      "Cannot delete role assigned to active users. Please reassign or delete assigned users first.",
-    );
+  it("never deletes a system role, even for the owner", async () => {
+    const role = { id: "s1", key: "operator", is_system: true, is_locked: false };
+    const res = await assertCanDeleteRoleRecord(clientWith(role), "s1", true);
+    expect(res).toEqual({ allowed: false, error: "System roles cannot be deleted" });
   });
 
-  it("blocks non-owner from deleting roles", async () => {
-    const rolesMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({
-        data: { id: "role-1", key: "custom_role", is_system: false, school_id: "school-1" },
-        error: null,
-      }),
-    };
+  it("never deletes the locked owner role", async () => {
+    const role = { id: "o1", key: "owner", is_system: true, is_locked: true };
+    const res = await assertCanDeleteRoleRecord(clientWith(role), "o1", true);
+    expect(res).toEqual({ allowed: false, error: "Cannot delete the owner role" });
+  });
 
-    const supabase = {
-      from: vi.fn(() => rolesMock),
-    } as unknown as SupabaseClient;
-
-    const res = await assertCanDeleteRoleRecord(supabase, "role-1", "school-1", false);
+  it("refuses a role that still has users", async () => {
+    const res = await assertCanDeleteRoleRecord(clientWith(customRole, [{ id: "a1" }]), "c1", true);
     expect(res.allowed).toBe(false);
-    expect(res.error).toBe("Only the platform owner can delete roles");
+    expect(res.error).toContain("assigned to active users");
+  });
+
+  it("reports an unknown role", async () => {
+    const res = await assertCanDeleteRoleRecord(clientWith(null), "missing", true);
+    expect(res).toEqual({ allowed: false, error: "Role not found" });
   });
 });
