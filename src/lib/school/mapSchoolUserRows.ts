@@ -9,9 +9,14 @@ export type RawProfileQueryResult = {
   department_id: string | null;
   is_active: boolean;
   departments: { name_ar: string; name_en: string } | null;
-  user_role_assignments: Array<{
+  user_role_assignments:
+    | {
+        roles: { key: string } | null;
+      }
+    | Array<{
     roles: { key: string } | null;
-  }> | null;
+      }>
+    | null;
 };
 
 export type MappedSchoolUser = {
@@ -35,9 +40,14 @@ export function mapSchoolUserRows(
   const result: MappedSchoolUser[] = [];
 
   for (const row of rows) {
+    const assignments = Array.isArray(row.user_role_assignments)
+      ? row.user_role_assignments
+      : row.user_role_assignments
+        ? [row.user_role_assignments]
+        : [];
     const isOwner = Boolean(
       (ownerUserIds && ownerUserIds.has(row.id)) ||
-      row.user_role_assignments?.some((a) => a.roles?.key === "owner"),
+      assignments.some((assignment) => assignment.roles?.key === "owner"),
     );
 
     // The platform owner account must never appear in the school user list
