@@ -47,7 +47,7 @@ export async function persistSchoolProfile(
   }
 
   const { error: settingsError } = await supabase.from("school_settings").upsert({
-    school_id: schoolId,
+    singleton: true,
     academic_year: parsed.academicYear,
     vision: parsed.visionAr ?? parsed.visionEn,
     mission: parsed.missionAr ?? parsed.missionEn,
