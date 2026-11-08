@@ -57,8 +57,7 @@ try {
   const ownerProbe = await admin
     .from("user_role_assignments")
     .select("id, roles!inner(key)", { count: "exact", head: true })
-    .eq("roles.key", "owner")
-    .is("school_id", null);
+    .eq("roles.key", "owner");
   check(
     "owner-existence query returns a usable count (C1)",
     !ownerProbe.error && typeof ownerProbe.count === "number",
@@ -108,7 +107,6 @@ try {
       .insert({
         user_id: fx.users.admin2.id,
         role_id: fx.roleIds.school_admin,
-        school_id: fx.schoolId,
       })
       .select("id"),
   );
@@ -117,7 +115,7 @@ try {
   await expectDenied("owner cannot demote the last platform owner", () =>
     ownerC
       .from("user_role_assignments")
-      .update({ role_id: fx.roleIds.school_admin, school_id: fx.schoolId })
+      .update({ role_id: fx.roleIds.school_admin })
       .eq("id", fx.ownerAssignmentId)
       .select("id"),
   );
@@ -235,7 +233,6 @@ try {
       .insert({
         user_id: fx.users.staff1.id,
         role_id: fx.roleIds.school_admin,
-        school_id: fx.schoolId,
       })
       .select("id"),
   );
@@ -638,8 +635,8 @@ try {
       .from("roles")
       .insert({
         key: "owner",
-        name: "Forged Owner",
-        school_id: fx.schoolId,
+        name_ar: "مالك مزور",
+        name_en: "Forged Owner",
         is_system: false,
       })
       .select("id"),
@@ -652,8 +649,8 @@ try {
       .from("roles")
       .insert({
         key: "owner",
-        name: "Forged Owner",
-        school_id: fx.schoolId,
+        name_ar: "مالك مزور",
+        name_en: "Forged Owner",
         is_system: false,
       })
       .select("id"),
@@ -670,7 +667,6 @@ try {
       .insert({
         user_id: fx.users.admin.id,
         role_id: fx.roleIds.owner,
-        school_id: fx.schoolId,
         assigned_by: fx.users.admin.id,
       })
       .select("id"),
@@ -703,8 +699,8 @@ try {
     .from("roles")
     .insert({
       key: `custom-${ts}`,
-      name: "Custom Role",
-      school_id: fx.schoolId,
+      name_ar: "دور مخصص",
+      name_en: "Custom Role",
       is_system: false,
     })
     .select("id")
@@ -736,8 +732,8 @@ try {
     .from("roles")
     .insert({
       key: `circular-creator-${ts}`,
-      name: "Circular Creator",
-      school_id: fx.schoolId,
+      name_ar: "منشئ التعميم",
+      name_en: "Circular Creator",
       is_system: false,
     })
     .select("id")
@@ -748,7 +744,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: fx.users.staff1.id,
     role_id: creatorRole.id,
-    school_id: fx.schoolId,
     assigned_by: fx.users.admin.id,
   });
 
@@ -797,8 +792,8 @@ try {
     .from("roles")
     .insert({
       key: `roles-only-${ts}`,
-      name: "Roles Only",
-      school_id: fx.schoolId,
+      name_ar: "الأدوار فقط",
+      name_en: "Roles Only",
       is_system: false,
     })
     .select("id")
@@ -809,7 +804,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: fx.users.staff2.id,
     role_id: rolesOnlyRole.id,
-    school_id: fx.schoolId,
     assigned_by: fx.users.admin.id,
   });
   await expectDenied("a roles.manage-only user cannot assign roles (D-2)", () =>
@@ -818,7 +812,6 @@ try {
       .insert({
         user_id: fx.users.staff2.id,
         role_id: fx.roleIds.school_admin,
-        school_id: fx.schoolId,
         assigned_by: fx.users.staff2.id,
       })
       .select("id"),
@@ -1189,8 +1182,8 @@ try {
     .from("roles")
     .insert({
       key: `calendar-only-${ts}`,
-      name: "Calendar Only",
-      school_id: fx.schoolId,
+      name_ar: "التقويم فقط",
+      name_en: "Calendar Only",
       is_system: false,
     })
     .select("id")
@@ -1201,7 +1194,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: fx.users.staff2.id,
     role_id: calendarRole.id,
-    school_id: fx.schoolId,
     assigned_by: fx.users.admin.id,
   });
 
@@ -1285,8 +1277,8 @@ try {
     .from("roles")
     .insert({
       key: `user-manager-${ts}`,
-      name: "User Manager",
-      school_id: fx.schoolId,
+      name_ar: "مدير المستخدمين",
+      name_en: "User Manager",
       is_system: false,
     })
     .select("id")
@@ -1297,7 +1289,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: fx.users.head.id,
     role_id: userManagerRole.id,
-    school_id: fx.schoolId,
     assigned_by: fx.users.admin.id,
   });
 
@@ -1344,7 +1335,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: leaverAuth.user.id,
     role_id: fx.roleIds.staff,
-    school_id: fx.schoolId,
     assigned_by: fx.users.admin.id,
   });
   fx.users.leaver = { id: leaverAuth.user.id, email: leaverEmail };
@@ -1466,9 +1456,9 @@ try {
     adminC
       .from("roles")
       .insert({
-        name: "Admin made role",
+        name_ar: "دور أنشأه المدير",
+        name_en: "Admin made role",
         key: `admin-made-${ts}`,
-        school_id: fx.schoolId,
         is_system: false,
       })
       .select("id"),
@@ -1476,7 +1466,12 @@ try {
 
   const { error: shadowErr } = await ownerC
     .from("roles")
-    .insert({ name: "Staff clone", key: "staff", school_id: fx.schoolId, is_system: false })
+    .insert({
+      name_ar: "نسخة الموظف",
+      name_en: "Staff clone",
+      key: "staff",
+      is_system: false,
+    })
     .select("id");
   check(
     "a role cannot shadow the system key 'staff' (N11)",
@@ -1488,7 +1483,12 @@ try {
   const newKey = `battery-new-${ts}`;
   const { data: newRole, error: newRoleErr } = await ownerC
     .from("roles")
-    .insert({ name: "Battery new role", key: newKey, school_id: fx.schoolId, is_system: false })
+    .insert({
+      name_ar: "دور جديد للاختبار",
+      name_en: "Battery new role",
+      key: newKey,
+      is_system: false,
+    })
     .select("id")
     .single();
   check(
@@ -1536,7 +1536,6 @@ try {
   await admin.from("user_role_assignments").insert({
     user_id: fx.users.head.id,
     role_id: fx.roleIds.department_head,
-    school_id: fx.schoolId,
     department_id: null,
   });
   await expectDenied("a response cannot be attributed to a foreign department (0049)", () =>
