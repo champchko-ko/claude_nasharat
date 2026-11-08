@@ -26,7 +26,7 @@ export async function assertCanManageBackup(): Promise<BackupAccessResult> {
   return {
     allowed: isOwner,
     isOwner,
-    schoolId: profile.school_id,
+    schoolId: "singleton",
     userId: profile.id,
     userEmail: profile.email,
   };

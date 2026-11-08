@@ -3,8 +3,6 @@ import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
 export type DepartmentRow = {
   id: string;
-  /** @deprecated There is one school; departments carry no school id. Never set. */
-  school_id?: string;
   name_ar: string;
   name_en: string;
   is_active: boolean;
@@ -28,9 +26,8 @@ async function loadDepartments(): Promise<DepartmentRow[]> {
 /**
  * All departments, oldest first.
  *
- * The optional argument exists only so call sites written for the multi-tenant
- * schema keep compiling while `school_id` is removed module by module. It is
- * ignored: there is one school.
+ * The optional argument is retained for compatibility with older callers and
+ * is ignored because there is one school.
  */
 export const getSchoolDepartments: (legacySchoolId?: string | null) => Promise<DepartmentRow[]> =
   loadDepartments;

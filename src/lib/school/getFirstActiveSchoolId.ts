@@ -1,12 +1,8 @@
 import { createSupabaseServerClient, createSupabaseAdminClient } from "@/lib/supabase";
 
 /**
- * Resolves the fallback tenant for a platform owner.
- *
- * A platform owner has no `school_id` of their own. It attempts resolution
- * via the session client first, and falls back to the service-role client
- * to guarantee platform owners can administer school resources even when
- * tenancy resolution is unassigned.
+ * Resolves the one active school for this deployment, using the service role
+ * as a fallback when the session cannot read the singleton row.
  */
 export async function getFirstActiveSchoolId(): Promise<string | null> {
   try {

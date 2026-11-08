@@ -8,8 +8,8 @@ describe("fetchPreviewDocument", () => {
       data: {
         file_path: "p/1.pdf",
         mime_type: "application/pdf",
-        school_id: "s1",
-        is_published: true,
+        status: "published",
+        visibility: "public",
       },
       error: null,
     });
@@ -23,8 +23,8 @@ describe("fetchPreviewDocument", () => {
     expect(res).toEqual({
       file_path: "p/1.pdf",
       mime_type: "application/pdf",
-      school_id: "s1",
-      is_published: true,
+      status: "published",
+      visibility: "public",
     });
   });
 
@@ -37,7 +37,6 @@ describe("fetchPreviewDocument", () => {
       data: {
         file_path: "p/legacy.pdf",
         mime_type: "application/pdf",
-        school_id: "s1",
       },
       error: null,
     });
@@ -61,8 +60,8 @@ describe("fetchPreviewDocument", () => {
     expect(res).toEqual({
       file_path: "p/legacy.pdf",
       mime_type: "application/pdf",
-      school_id: "s1",
-      is_published: true,
+      status: "published",
+      visibility: "public",
     });
   });
 

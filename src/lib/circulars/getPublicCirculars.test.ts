@@ -4,7 +4,6 @@ import { getPublicCirculars } from "./getPublicCirculars";
 const mockCirculars = [
   {
     id: "circ-pub-1",
-    school_id: "school-1",
     ref_number: "CIR-2026-001",
     title: "Public Bulletin 1",
     body: "Details of public bulletin",
@@ -19,11 +18,7 @@ vi.mock("@/lib/supabase", () => ({
     from: () => ({
       select: () => ({
         eq: () => ({
-          eq: () => ({
-            eq: () => ({
-              order: () => Promise.resolve({ data: mockCirculars, error: null }),
-            }),
-          }),
+          order: () => Promise.resolve({ data: mockCirculars, error: null }),
         }),
       }),
     }),

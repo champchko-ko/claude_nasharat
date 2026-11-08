@@ -43,7 +43,7 @@ describe("getSchoolUsers", () => {
 
     expect(users.map((u) => u.id)).toEqual(["a", "b"]);
     expect(select).toHaveBeenCalledWith(expect.stringContaining("roles(key)"));
-    expect(select).toHaveBeenCalledWith(expect.not.stringContaining("school_id"));
+    expect(select).toHaveBeenCalledWith(expect.not.stringContaining("tenant_id"));
   });
 
   it("hides owner accounts", async () => {

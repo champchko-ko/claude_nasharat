@@ -8,7 +8,6 @@ export async function createAchievementRecord(
   const { data, error } = await supabase
     .from("school_achievements")
     .insert({
-      school_id: input.schoolId,
       department_id: input.departmentId || null,
       title_ar: input.titleAr,
       title_en: input.titleEn || null,

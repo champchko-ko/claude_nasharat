@@ -26,7 +26,6 @@ export async function retryResponseWithAdmin(params: RetryResponseAdminParams): 
 
   const { error } = await admin.from("circular_responses").insert({
     circular_id: params.circularId,
-    school_id: params.schoolId,
     department_id: params.departmentId,
     responder_id: params.responderId,
     response_type: params.responseType,

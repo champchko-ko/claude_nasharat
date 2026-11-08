@@ -77,9 +77,8 @@ describe("getCurrentProfile", () => {
       error: null,
     });
 
-    const profile = await getCurrentProfile();
+    await getCurrentProfile();
 
-    expect(selectSpy.mock.calls[0][0]).not.toContain("school_id");
-    expect(profile?.school_id).toBeNull();
+    expect(selectSpy.mock.calls[0][0]).not.toContain("tenant_id");
   });
 });

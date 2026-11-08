@@ -3,7 +3,7 @@ import { insertSchoolDocumentRecord } from "./insertSchoolDocumentRecord";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 describe("insertSchoolDocumentRecord", () => {
-  it("inserts document record with is_published = true", async () => {
+    it("inserts a published public document", async () => {
     const mockInsert = vi.fn().mockReturnValue({
       select: () => ({
         single: () => Promise.resolve({ data: { id: "doc-1" }, error: null }),
@@ -29,7 +29,8 @@ describe("insertSchoolDocumentRecord", () => {
     expect(id).toBe("doc-1");
     expect(mockInsert).toHaveBeenCalledWith(
       expect.objectContaining({
-        is_published: true,
+        status: "published",
+        visibility: "public",
         slug: "operational-plan",
       }),
     );

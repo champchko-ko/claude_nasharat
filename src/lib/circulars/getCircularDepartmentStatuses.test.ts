@@ -8,7 +8,6 @@ describe("getCircularDepartmentStatuses", () => {
   const depts: DepartmentRow[] = [
     {
       id: "d1",
-      school_id: "s1",
       name_ar: "قسم العلوم",
       name_en: "Science Dept",
       is_active: true,
@@ -16,7 +15,6 @@ describe("getCircularDepartmentStatuses", () => {
     },
     {
       id: "d2",
-      school_id: "s1",
       name_ar: "قسم الرياضيات",
       name_en: "Math Dept",
       is_active: true,
@@ -26,7 +24,6 @@ describe("getCircularDepartmentStatuses", () => {
 
   const baseCircular: CircularDetail = {
     id: "c1",
-    school_id: "s1",
     ref_number: "CIRC-001",
     title: "Test Circular",
     body: "Content",
@@ -57,7 +54,6 @@ describe("getCircularDepartmentStatuses", () => {
     const response: CircularResponseRow = {
       id: "r1",
       circular_id: "c1",
-      school_id: "s1",
       department_id: "d1",
       department_name: "قسم العلوم",
       responder_id: "u2",

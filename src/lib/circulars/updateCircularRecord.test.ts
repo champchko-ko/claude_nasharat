@@ -59,8 +59,8 @@ describe("updateCircularRecord", () => {
     expect(result).toEqual({ success: true });
     expect(deleteEq).toHaveBeenCalledWith("circular_id", "circ-1");
     expect(insert).toHaveBeenCalledWith([
-      { circular_id: "circ-1", school_id: "school-1", department_id: "dept-1" },
-      { circular_id: "circ-1", school_id: "school-1", department_id: "dept-2" },
+      { circular_id: "circ-1", department_id: "dept-1" },
+      { circular_id: "circ-1", department_id: "dept-2" },
     ]);
   });
 });

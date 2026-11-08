@@ -18,8 +18,8 @@ export default async function LocationsSettingsPage({
 
   const profile = await getCurrentProfile();
   const [hasPerm, isOwner] = await Promise.all([
-    profile?.school_id
-      ? hasPermission("settings.school.update", profile.school_id).catch(() => false)
+    profile
+      ? hasPermission("settings.school.update").catch(() => false)
       : false,
     isCurrentUserPlatformOwner(profile?.id),
   ]);
@@ -30,7 +30,7 @@ export default async function LocationsSettingsPage({
     redirect({ href: "/settings", locale });
   }
 
-  const locations = await getSchoolLocations(profile?.school_id);
+  const locations = await getSchoolLocations("singleton");
 
   return (
     <div className="flex flex-col gap-6">

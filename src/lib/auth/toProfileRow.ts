@@ -20,7 +20,6 @@ export function toProfileRow(row: RawProfileResult): ProfileRow {
     full_name: row.full_name,
     email: row.email,
     job_title: row.job_title,
-    school_id: null,
     department_id: row.department_id,
     department_name_ar: nameAr,
     department_name_en: nameEn,

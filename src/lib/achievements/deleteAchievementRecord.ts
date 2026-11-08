@@ -5,11 +5,12 @@ export async function deleteAchievementRecord(
   achievementId: string,
   schoolId: string,
 ) {
+  void schoolId;
   const { error } = await supabase
     .from("school_achievements")
     .delete()
     .eq("id", achievementId)
-    .eq("school_id", schoolId);
+    ;
 
   if (error) {
     return { error: error.message };

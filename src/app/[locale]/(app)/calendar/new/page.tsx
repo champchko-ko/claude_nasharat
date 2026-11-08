@@ -15,14 +15,14 @@ export default async function NewCalendarEventPage({
   setRequestLocale(locale);
 
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     redirect(`/${locale}/login`);
   }
 
   const [hasManagePerm, isOwner, schoolDetails] = await Promise.all([
-    hasPermission("calendar.manage", profile.school_id, profile.department_id).catch(() => false),
+    hasPermission("calendar.manage", undefined, profile.department_id).catch(() => false),
     isPlatformOwner(profile.id),
-    getSchoolFullDetails(profile.school_id).catch(() => null),
+    getSchoolFullDetails().catch(() => null),
   ]);
 
   const canManage = isOwner || hasManagePerm;

@@ -7,7 +7,7 @@ export async function getCircularAttachments(circularId: string): Promise<Circul
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("circular_attachments")
-    .select("id, circular_id, school_id, path, mime, size_bytes, uploaded_by, created_at")
+    .select("id, circular_id, path, mime, size_bytes, uploaded_by, created_at")
     .eq("circular_id", circularId)
     .order("created_at", { ascending: true });
 

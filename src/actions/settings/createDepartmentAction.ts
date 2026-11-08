@@ -14,11 +14,11 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function createDepartmentAction(formData: FormData): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
-    const allowed = await hasPermission("settings.school.update", profile.school_id);
+    const allowed = await hasPermission("settings.school.update");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -33,7 +33,6 @@ export async function createDepartmentAction(formData: FormData): Promise<Action
 
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.from("departments").insert({
-      school_id: profile.school_id,
       name_ar: parsed.data.nameAr,
       name_en: parsed.data.nameEn,
     });

@@ -11,7 +11,6 @@ describe("PublicCalendarItemCard", () => {
       date: "2026-11-01T08:00:00Z",
       event: {
         id: "ev-1",
-        school_id: "s-1",
         title_ar: "اختبارات منتصف الفصل الدراسي",
         title_en: "Midterm Exams",
         description: null,
@@ -47,7 +46,6 @@ describe("PublicCalendarItemCard", () => {
       date: "2026-11-15T00:00:00Z",
       circular: {
         id: "circ-1",
-        school_id: "s-1",
         ref_number: "CIRC-2026-001",
         title: "نشرة توعوية حول الاختبارات",
         body: "تفاصيل النشرة التوعوية",

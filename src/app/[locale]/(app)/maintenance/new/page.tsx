@@ -14,20 +14,20 @@ export default async function NewMaintenancePage({
   setRequestLocale(locale);
 
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     redirect(`/${locale}/login`);
   }
 
   const canCreate = await hasPermission(
     "maintenance.create",
-    profile.school_id,
+    undefined,
     profile.department_id,
   ).catch(() => false);
   if (!canCreate) {
     redirect(`/${locale}/maintenance`);
   }
 
-  const allLocations = await getSchoolLocations(profile.school_id);
+  const allLocations = await getSchoolLocations("singleton");
   const activeLocations = allLocations.filter((l) => l.is_active);
 
   return (

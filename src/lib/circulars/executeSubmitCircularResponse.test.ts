@@ -32,7 +32,6 @@ describe("executeSubmitCircularResponse", () => {
 
     expect(rpcMock).toHaveBeenCalledWith("submit_circular_response", {
       p_circular_id: "circ-1",
-      p_school_id: "school-1",
       p_department_id: "dept-1",
       p_response_type: "acknowledgement",
       p_status: "acknowledged",
@@ -84,7 +83,6 @@ describe("executeSubmitCircularResponse", () => {
 
     expect(insertMock).toHaveBeenCalledWith({
       circular_id: "circ-1",
-      school_id: "school-1",
       department_id: "dept-1",
       responder_id: "user-1",
       response_type: "acknowledgement",

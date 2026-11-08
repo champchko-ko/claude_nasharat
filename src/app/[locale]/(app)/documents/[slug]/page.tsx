@@ -40,7 +40,7 @@ export default async function SchoolDocumentPage({
   const { canViewDocuments } = resolveLayoutNavigationAccess(
     isOwner,
     permissions,
-    Boolean(profile.school_id),
+    true,
   );
 
   if (!canViewDocuments) {

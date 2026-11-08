@@ -7,10 +7,11 @@ import type { ProfileRow } from "@/lib/auth/getCurrentProfile";
 
 export async function assertCanUpdateSchoolSettings(
   profile: ProfileRow,
-  formSchoolId?: string | null,
+  _formSchoolId?: string | null,
 ): Promise<string> {
+  void _formSchoolId;
   const isOwner = await isCurrentUserPlatformOwner(profile.id);
-  const targetSchoolId = profile.school_id ?? formSchoolId ?? (await getFirstActiveSchoolId());
+  const targetSchoolId = await getFirstActiveSchoolId();
 
   if (!targetSchoolId) {
     throw new ValidationError("No target school specified");
@@ -20,11 +21,7 @@ export async function assertCanUpdateSchoolSettings(
     return targetSchoolId;
   }
 
-  if (profile.school_id && formSchoolId && profile.school_id !== formSchoolId) {
-    throw new ForbiddenError("Cannot manage a different school");
-  }
-
-  const allowed = await hasPermission("settings.school.update", targetSchoolId);
+  const allowed = await hasPermission("settings.school.update");
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }

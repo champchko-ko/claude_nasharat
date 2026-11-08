@@ -31,7 +31,6 @@ export async function getCircularsReportData(
   const baseQuery = supabase
     .from("circulars")
     .select("id, ref_number, title, category, priority, status, publish_at, due_at, created_at")
-    .eq("school_id", schoolId)
     .order("created_at", { ascending: false });
 
   const query = applyCircularReportFilters(baseQuery, filters);

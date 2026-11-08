@@ -39,7 +39,6 @@ describe("NotificationItem", () => {
     const notification: NotificationRow = {
       id: "notif-1",
       user_id: "user-1",
-      school_id: "school-1",
       type: "circular",
       title: "circular_published",
       body: "circular_published",
@@ -59,7 +58,6 @@ describe("NotificationItem", () => {
     const notification: NotificationRow = {
       id: "notif-2",
       user_id: "user-1",
-      school_id: "school-1",
       type: "maintenance",
       title: "maintenance_assigned",
       body: "maintenance_assigned",

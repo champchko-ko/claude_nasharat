@@ -51,7 +51,7 @@ describe("deleteMaintenanceRequestAction", () => {
   });
 
   it("fails when user lacks permission", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "user-1", school_id: "school-1" });
+    mockGetCurrentProfile.mockResolvedValue({ id: "user-1" });
     mockIsPlatformOwner.mockResolvedValue(false);
     mockHasPermission.mockResolvedValue(false);
 
@@ -61,7 +61,7 @@ describe("deleteMaintenanceRequestAction", () => {
   });
 
   it("succeeds when user is platform owner", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "owner-1", school_id: "school-1" });
+    mockGetCurrentProfile.mockResolvedValue({ id: "owner-1" });
     mockIsPlatformOwner.mockResolvedValue(true);
     mockDeleteRecord.mockResolvedValue({ success: true });
 
@@ -70,7 +70,7 @@ describe("deleteMaintenanceRequestAction", () => {
   });
 
   it("succeeds when user has maintenance.close permission", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "admin-1", school_id: "school-1" });
+    mockGetCurrentProfile.mockResolvedValue({ id: "admin-1" });
     mockIsPlatformOwner.mockResolvedValue(false);
     mockHasPermission.mockImplementation(async (perm: string) => perm === "maintenance.close");
     mockDeleteRecord.mockResolvedValue({ success: true });

@@ -5,7 +5,6 @@ import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
 export interface TransitionTicket {
   id: string;
-  school_id: string;
   status: MaintenanceStatus;
   reporter_id: string;
   assigned_operator_id: string | null;
@@ -17,7 +16,7 @@ export async function fetchTicketForTransition(
 ): Promise<TransitionTicket> {
   const { data: ticket, error: ticketError } = await supabase
     .from("maintenance_requests")
-    .select("id, school_id, status, reporter_id, assigned_operator_id")
+    .select("id, status, reporter_id, assigned_operator_id")
     .eq("id", requestId)
     .maybeSingle();
 

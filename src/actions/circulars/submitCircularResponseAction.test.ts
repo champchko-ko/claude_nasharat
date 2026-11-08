@@ -30,7 +30,6 @@ describe("submitCircularResponseAction", () => {
   it("submits response via transactional RPC", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "usr-1",
-      school_id: "sch-1",
       department_id: "dept-1",
       full_name: "Staff User",
       email: "staff@example.com",
@@ -55,7 +54,6 @@ describe("submitCircularResponseAction", () => {
     expect(result).toEqual({ success: true });
     expect(rpcMock).toHaveBeenCalledWith("submit_circular_response", {
       p_circular_id: "circ-1",
-      p_school_id: "sch-1",
       p_department_id: "dept-1",
       p_response_type: "acknowledgement",
       p_status: "acknowledged",
@@ -66,7 +64,6 @@ describe("submitCircularResponseAction", () => {
   it("fails with validation error when rejection reason is missing", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "usr-1",
-      school_id: "sch-1",
       department_id: "dept-1",
       full_name: "Staff User",
       email: "staff@example.com",

@@ -6,14 +6,14 @@ import { hasPermission } from "@/lib/rbac/hasPermission";
 export async function assertCanRespondToCircular(
   profile: ProfileRow | null,
 ): Promise<{ schoolId: string; departmentId: string }> {
-  if (!profile?.school_id || !profile.department_id) {
+  if (!profile || !profile.department_id) {
     throw new AuthenticationError("Must belong to a department to respond");
   }
 
-  const allowed = await hasPermission("circular.respond", profile.school_id, profile.department_id);
+  const allowed = await hasPermission("circular.respond", undefined, profile.department_id);
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }
 
-  return { schoolId: profile.school_id, departmentId: profile.department_id };
+  return { schoolId: "singleton", departmentId: profile.department_id };
 }

@@ -13,7 +13,7 @@ export async function resolveScopedRoleIds(
 ): Promise<string[] | null> {
   if (!schoolId) return null;
 
-  const { data, error } = await admin.from("roles").select("id").eq("school_id", schoolId);
+  const { data, error } = await admin.from("roles").select("id");
   if (error) {
     throw mapDatabaseError(error, "Could not list the school's roles");
   }

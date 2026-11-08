@@ -45,7 +45,6 @@ describe("getMaintenanceAttachments", () => {
       {
         id: "att-1",
         request_id: "req-123",
-        school_id: "sch-1",
         kind: "photo",
         path: "req-123/before.jpg",
         mime: "image/jpeg",

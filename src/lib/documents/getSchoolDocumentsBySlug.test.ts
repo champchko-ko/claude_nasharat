@@ -2,7 +2,6 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { getSchoolDocumentsBySlug } from "./getSchoolDocumentsBySlug";
 
 const mockSelect = vi.fn();
-const mockEqSchool = vi.fn();
 const mockEqSlug = vi.fn();
 const mockOrder = vi.fn();
 
@@ -10,11 +9,7 @@ vi.mock("@/lib/supabase", () => ({
   createSupabaseServerClient: vi.fn(async () => ({
     from: vi.fn(() => ({
       select: mockSelect.mockReturnValue({
-        eq: mockEqSchool.mockReturnValue({
-          eq: mockEqSlug.mockReturnValue({
-            order: mockOrder,
-          }),
-        }),
+        eq: mockEqSlug.mockReturnValue({ order: mockOrder }),
       }),
     })),
   })),
@@ -46,7 +41,6 @@ describe("getSchoolDocumentsBySlug", () => {
       data: [
         {
           id: "doc-1",
-          school_id: "school-1",
           slug: "operational-plan",
           title: "Plan",
           description: "Desc",
@@ -54,7 +48,8 @@ describe("getSchoolDocumentsBySlug", () => {
           file_name: "plan.pdf",
           file_size: 100,
           mime_type: "application/pdf",
-          is_published: true,
+          status: "published",
+          visibility: "public",
           created_by: "user-1",
           created_at: "2026-11-01T00:00:00Z",
           updated_at: "2026-11-01T00:00:00Z",

@@ -16,7 +16,6 @@ export type MaintenanceCategory =
 
 export interface MaintenanceRequestRow {
   id: string;
-  school_id: string;
   ticket_number: string;
   title: string;
   description: string;
@@ -65,7 +64,6 @@ export interface MaintenanceRequestRow {
 export interface MaintenanceUpdateRow {
   id: string;
   request_id: string;
-  school_id: string;
   author_id: string;
   kind: "note" | "status_change" | "priority_change" | "assignment";
   old_value: string | null;
@@ -81,7 +79,6 @@ export interface MaintenanceUpdateRow {
 export interface MaintenanceAttachmentRow {
   id: string;
   request_id: string;
-  school_id: string;
   kind: "report" | "evidence";
   path: string;
   mime: string | null;

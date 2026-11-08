@@ -20,7 +20,6 @@ export async function insertCircularRecord(
   const { data, error } = await supabase
     .from("circulars")
     .insert({
-      school_id: params.schoolId,
       ref_number: refNum,
       title: params.title,
       body: params.body,

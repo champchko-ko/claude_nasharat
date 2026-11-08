@@ -32,7 +32,7 @@ export async function deleteSchoolDocumentAction(
       .from("school_documents")
       .delete()
       .eq("id", id)
-      .eq("school_id", auth.schoolId);
+      ;
 
     if (deleteError) {
       throw mapDatabaseError(deleteError, "Failed to delete document");

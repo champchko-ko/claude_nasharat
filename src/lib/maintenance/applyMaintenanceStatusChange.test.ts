@@ -19,7 +19,7 @@ describe("applyMaintenanceStatusChange", () => {
     vi.clearAllMocks();
   });
 
-  it("applies status change with school_id filter and logs the update", async () => {
+  it("applies status change and logs the update", async () => {
     const selectMock = vi.fn().mockResolvedValue({
       data: [{ id: "req-1" }],
       error: null,
@@ -44,7 +44,7 @@ describe("applyMaintenanceStatusChange", () => {
 
     expect(fromMock).toHaveBeenCalledWith("maintenance_requests");
     expect(eqIdMock).toHaveBeenCalledWith("id", "req-1");
-    expect(eqSchoolMock).toHaveBeenCalledWith("school_id", "sch-1");
+    expect(eqSchoolMock).not.toHaveBeenCalledWith("tenant_id", "sch-1");
     expect(selectMock).toHaveBeenCalledWith("id");
   });
 

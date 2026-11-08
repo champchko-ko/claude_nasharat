@@ -6,7 +6,6 @@ import type { CircularRow } from "@/lib/circulars/types";
 describe("buildUnifiedCalendarItems", () => {
   const mockEvent: CalendarEventRow = {
     id: "event-1",
-    school_id: "sch-1",
     title_ar: "حفل مدرسي",
     title_en: "School Gala",
     description: "Annual gala",
@@ -27,7 +26,6 @@ describe("buildUnifiedCalendarItems", () => {
 
   const mockCircular: CircularRow = {
     id: "circ-1",
-    school_id: "sch-1",
     ref_number: "CIRC-2026-001",
     title: "Exam Instructions",
     body: "Please submit syllabus",

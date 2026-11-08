@@ -74,7 +74,7 @@ export async function getCurrentSchool(schoolId?: string | null): Promise<School
 
   let targetId = schoolId;
 
-  if (targetId === undefined) {
+  if (targetId === undefined || targetId === "singleton") {
     targetId = await getFirstActiveSchoolId();
   }
   if (!targetId) {

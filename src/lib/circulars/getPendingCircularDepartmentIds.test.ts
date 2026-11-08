@@ -49,7 +49,6 @@ function buildClient({
 const departments = [
   {
     id: "d1",
-    school_id: "s1",
     name_ar: "العلوم",
     name_en: "Science",
     is_active: true,
@@ -57,7 +56,6 @@ const departments = [
   },
   {
     id: "d2",
-    school_id: "s1",
     name_ar: "الرياضيات",
     name_en: "Math",
     is_active: true,
@@ -67,7 +65,6 @@ const departments = [
 
 const publishedCircular = {
   id: "c1",
-  school_id: "s1",
   ref_number: "CIR-1",
   title: "Broadcast",
   category: "general",

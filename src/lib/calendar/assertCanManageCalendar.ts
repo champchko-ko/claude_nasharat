@@ -8,14 +8,14 @@ export async function assertCanManageCalendar(): Promise<{
   profileId: string;
 }> {
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     throw new AuthenticationError("No school associated with profile");
   }
 
-  const allowed = await hasPermission("calendar.manage", profile.school_id);
+  const allowed = await hasPermission("calendar.manage");
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }
 
-  return { schoolId: profile.school_id, profileId: profile.id };
+  return { schoolId: "singleton", profileId: profile.id };
 }

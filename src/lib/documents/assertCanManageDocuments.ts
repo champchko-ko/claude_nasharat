@@ -31,8 +31,7 @@ export async function assertCanManageDocuments(): Promise<ManageDocumentsAccessR
         p === "roles.manage" ||
         p === "audit.view" ||
         p === "school.manage",
-    ) ||
-    !profile.school_id;
+    );
 
   return {
     allowed: isManager,

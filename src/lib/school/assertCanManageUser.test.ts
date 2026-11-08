@@ -31,7 +31,7 @@ vi.mock("@/lib/supabase", () => ({
 
 import { assertCanManageUser } from "./assertCanManageUser";
 
-const caller = { id: "caller", school_id: null, is_active: true };
+const caller = { id: "caller", is_active: true };
 
 describe("assertCanManageUser", () => {
   beforeEach(() => {

@@ -18,8 +18,8 @@ export default async function DepartmentsSettingsPage({
 
   const profile = await getCurrentProfile();
   const [hasPerm, isOwner] = await Promise.all([
-    profile?.school_id
-      ? hasPermission("settings.school.update", profile.school_id).catch(() => false)
+    profile
+      ? hasPermission("settings.school.update").catch(() => false)
       : false,
     isCurrentUserPlatformOwner(profile?.id),
   ]);
@@ -30,7 +30,7 @@ export default async function DepartmentsSettingsPage({
     redirect({ href: "/settings", locale });
   }
 
-  const departments = await getSchoolDepartments(profile?.school_id);
+  const departments = await getSchoolDepartments("singleton");
 
   return (
     <div className="flex flex-col gap-6">

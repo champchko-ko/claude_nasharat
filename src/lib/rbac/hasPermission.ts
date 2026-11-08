@@ -10,9 +10,8 @@ import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
  * department. The answer reflects the current grants, so a change made by the
  * owner applies immediately.
  *
- * `_legacySchoolId` exists only so call sites written for the multi-tenant
- * schema keep compiling while `school_id` is removed module by module. It is
- * ignored and will be deleted together with the last such call site.
+ * `_legacySchoolId` is retained for compatibility with older callers and is
+ * ignored because permissions are deployment-wide.
  */
 export async function hasPermission(
   key: string,

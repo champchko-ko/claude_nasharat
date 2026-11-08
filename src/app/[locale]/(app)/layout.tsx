@@ -44,7 +44,7 @@ export default async function AuthenticatedAppLayout({
   const { canViewReports, canManageSettings, canViewDocuments } = resolveLayoutNavigationAccess(
     isOwner,
     permissions,
-    Boolean(profile?.school_id),
+    true,
   );
   const canBackupRestore = backupAccess.allowed;
 

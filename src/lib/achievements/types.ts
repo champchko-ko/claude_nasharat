@@ -5,7 +5,6 @@ export type AchievementVisibility = "public" | "internal";
 
 export interface SchoolAchievementRow {
   id: string;
-  school_id: string;
   department_id: string | null;
   department?: {
     id: string;

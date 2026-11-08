@@ -27,7 +27,6 @@ describe("EditCalendarEventForm", () => {
 
   const mockEvent: CalendarEventRow = {
     id: "evt-123",
-    school_id: "sch-1",
     title_ar: "حفل التخرج السنوي",
     title_en: "Annual Graduation Ceremony",
     description: "Honoring outstanding students",

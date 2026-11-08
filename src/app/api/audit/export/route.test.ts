@@ -42,7 +42,7 @@ describe("GET /api/audit/export", () => {
   it("returns CSV response when user is authorized", async () => {
     mockAssertCanViewAudit.mockResolvedValue({
       authorized: true,
-      profile: { id: "user-1", school_id: "sch-1" },
+      profile: { id: "user-1" },
       schoolId: "sch-1",
       isOwner: false,
     });

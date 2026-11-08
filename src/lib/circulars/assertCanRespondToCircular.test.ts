@@ -18,12 +18,11 @@ describe("assertCanRespondToCircular", () => {
       "Must belong to a department to respond",
     );
 
-    const noSchool = { id: "u-1", school_id: null, department_id: "d-1" } as unknown as ProfileRow;
-    await expect(assertCanRespondToCircular(noSchool)).rejects.toThrow(
+    await expect(assertCanRespondToCircular(null)).rejects.toThrow(
       "Must belong to a department to respond",
     );
 
-    const noDept = { id: "u-1", school_id: "s-1", department_id: null } as unknown as ProfileRow;
+    const noDept = { id: "u-1", department_id: null } as ProfileRow;
     await expect(assertCanRespondToCircular(noDept)).rejects.toThrow(
       "Must belong to a department to respond",
     );
@@ -31,17 +30,17 @@ describe("assertCanRespondToCircular", () => {
 
   it("throws ForbiddenError if user lacks circular.respond permission", async () => {
     vi.mocked(hasPermission).mockResolvedValue(false);
-    const profile = { id: "u-1", school_id: "s-1", department_id: "d-1" } as unknown as ProfileRow;
+    const profile = { id: "u-1", department_id: "d-1" } as ProfileRow;
 
     await expect(assertCanRespondToCircular(profile)).rejects.toThrow("Unauthorized");
-    expect(hasPermission).toHaveBeenCalledWith("circular.respond", "s-1", "d-1");
+    expect(hasPermission).toHaveBeenCalledWith("circular.respond", undefined, "d-1");
   });
 
   it("returns schoolId and departmentId when authorized", async () => {
     vi.mocked(hasPermission).mockResolvedValue(true);
-    const profile = { id: "u-1", school_id: "s-1", department_id: "d-1" } as unknown as ProfileRow;
+    const profile = { id: "u-1", department_id: "d-1" } as ProfileRow;
 
     const result = await assertCanRespondToCircular(profile);
-    expect(result).toEqual({ schoolId: "s-1", departmentId: "d-1" });
+    expect(result).toEqual({ schoolId: "singleton", departmentId: "d-1" });
   });
 });

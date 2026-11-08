@@ -1,6 +1,7 @@
 -- 0003: School, organisation, people, roles and permissions.
 -- One school per deployment: `schools` and `school_settings` are single-row
--- tables. Nothing else carries a school_id.
+-- tables. Nothing else carries a tenant column; all resources belong to the
+-- singleton school row.
 
 create table public.schools (
   id uuid primary key default gen_random_uuid(),

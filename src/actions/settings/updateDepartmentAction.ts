@@ -19,11 +19,11 @@ export async function updateDepartmentAction(
 ): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
-    const allowed = await hasPermission("settings.school.update", profile.school_id);
+    const allowed = await hasPermission("settings.school.update");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -39,8 +39,7 @@ export async function updateDepartmentAction(
     const { error } = await supabase
       .from("departments")
       .update({ name_ar: parsed.data.nameAr, name_en: parsed.data.nameEn })
-      .eq("id", departmentId)
-      .eq("school_id", profile.school_id);
+      .eq("id", departmentId);
 
     if (error) {
       throw mapDatabaseError(error);

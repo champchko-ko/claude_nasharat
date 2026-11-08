@@ -15,7 +15,6 @@ export async function createNotificationRecord(
     .from("notifications")
     .insert({
       user_id: input.userId,
-      school_id: input.schoolId ?? null,
       type: input.type,
       title: input.title,
       body: input.body ?? null,

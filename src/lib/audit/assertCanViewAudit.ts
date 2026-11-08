@@ -22,16 +22,12 @@ export async function assertCanViewAudit(): Promise<AssertCanViewAuditResult> {
     return {
       authorized: true,
       profile,
-      schoolId: profile.school_id ?? null,
+      schoolId: "singleton",
       isOwner: true,
     };
   }
 
-  if (!profile.school_id) {
-    return { authorized: false, error: "No school associated with profile" };
-  }
-
-  const allowed = await hasPermission("audit.view", profile.school_id);
+  const allowed = await hasPermission("audit.view");
   if (!allowed) {
     return { authorized: false, error: "Forbidden" };
   }
@@ -39,7 +35,7 @@ export async function assertCanViewAudit(): Promise<AssertCanViewAuditResult> {
   return {
     authorized: true,
     profile,
-    schoolId: profile.school_id,
+    schoolId: "singleton",
     isOwner: false,
   };
 }

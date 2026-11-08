@@ -6,7 +6,6 @@ describe("filterAchievements", () => {
   const dummy: SchoolAchievementRow[] = [
     {
       id: "1",
-      school_id: "s1",
       department_id: "d1",
       title_ar: "المركز الأول في الروبوت",
       title_en: "First place robotics",
@@ -21,7 +20,6 @@ describe("filterAchievements", () => {
     },
     {
       id: "2",
-      school_id: "s1",
       department_id: "d2",
       title_ar: "تفوق دراسي في الفيزياء",
       title_en: "Physics excellence",

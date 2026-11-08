@@ -11,10 +11,10 @@ export default async function MaintenancePage({ params }: { params: Promise<{ lo
 
   const profile = await getCurrentProfile();
   const [tickets, isOwner, hasPerm] = await Promise.all([
-    getSchoolMaintenanceRequests(profile?.school_id),
+    getSchoolMaintenanceRequests("singleton"),
     isCurrentUserPlatformOwner(profile?.id),
-    profile?.school_id
-      ? hasPermission("maintenance.create", profile.school_id, profile.department_id).catch(() => false)
+    profile
+      ? hasPermission("maintenance.create", undefined, profile.department_id).catch(() => false)
       : false,
   ]);
   const canCreate = isOwner || hasPerm;

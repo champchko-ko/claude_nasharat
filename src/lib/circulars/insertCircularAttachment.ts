@@ -11,9 +11,9 @@ export async function insertCircularAttachment(
     uploadedBy: string;
   },
 ): Promise<{ error?: string }> {
+  void params.schoolId;
   const { error } = await supabase.from("circular_attachments").insert({
     circular_id: params.circularId,
-    school_id: params.schoolId,
     path: params.path,
     mime: params.mime,
     size_bytes: params.sizeBytes,

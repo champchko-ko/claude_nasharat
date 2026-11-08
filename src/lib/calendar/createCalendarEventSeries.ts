@@ -24,7 +24,6 @@ export async function createCalendarEventSeries(
   }
 
   const rows = params.instances.map((inst) => ({
-    school_id: params.schoolId,
     title_ar: params.titleAr,
     title_en: params.titleEn,
     description: params.description,

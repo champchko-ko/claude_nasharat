@@ -17,7 +17,6 @@ export async function insertSchoolDocumentRecord(
   params: InsertDocumentParams,
 ): Promise<string> {
   const payload: Record<string, unknown> = {
-    school_id: params.schoolId,
     slug: params.slug,
     title: params.title,
     description: params.description,
@@ -26,7 +25,8 @@ export async function insertSchoolDocumentRecord(
     file_size: params.file.size,
     mime_type: params.file.type,
     created_by: params.profileId ?? null,
-    is_published: true,
+    status: "published",
+    visibility: "public",
   };
 
   let { data: inserted, error: insertError } = await supabase

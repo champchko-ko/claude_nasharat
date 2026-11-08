@@ -3,8 +3,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 export interface PreviewDocumentRecord {
   file_path: string;
   mime_type: string;
-  school_id: string;
-  is_published: boolean;
+  status: string;
+  visibility: string;
 }
 
 export async function fetchPreviewDocument(
@@ -13,7 +13,7 @@ export async function fetchPreviewDocument(
 ): Promise<PreviewDocumentRecord | null> {
   const { data: document, error: documentError } = await admin
     .from("school_documents")
-    .select("file_path, mime_type, school_id, is_published")
+    .select("file_path, mime_type, status, visibility")
     .eq("id", id)
     .maybeSingle();
 
@@ -24,12 +24,16 @@ export async function fetchPreviewDocument(
   if (documentError && documentError.code === "42703") {
     const fallback = await admin
       .from("school_documents")
-      .select("file_path, mime_type, school_id")
+      .select("file_path, mime_type, status, visibility")
       .eq("id", id)
       .maybeSingle();
 
     if (fallback.data) {
-      return { ...fallback.data, is_published: true } as PreviewDocumentRecord;
+      return {
+        ...fallback.data,
+        status: fallback.data.status ?? "published",
+        visibility: fallback.data.visibility ?? "public",
+      } as PreviewDocumentRecord;
     }
   }
 

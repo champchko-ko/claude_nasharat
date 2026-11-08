@@ -35,9 +35,8 @@ async function loadSchoolUsers(): Promise<SchoolUserRow[]> {
  * The staff directory, read with the service-role client. Callers must have
  * authorised the request first (the Users screen checks `users.manage`).
  *
- * The optional argument exists only so call sites written for the multi-tenant
- * schema keep compiling while `school_id` is removed module by module. It is
- * ignored: there is one school.
+ * The optional argument is retained for compatibility with older callers and
+ * is ignored because there is one school.
  */
 export const getSchoolUsers: (legacySchoolId?: string | null) => Promise<SchoolUserRow[]> =
   loadSchoolUsers;

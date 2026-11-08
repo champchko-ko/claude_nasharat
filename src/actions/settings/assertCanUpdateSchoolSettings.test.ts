@@ -28,7 +28,6 @@ describe("assertCanUpdateSchoolSettings", () => {
     full_name: "Test User",
     email: "test@local.test",
     job_title: null,
-    school_id: "sch-1",
     department_id: null,
     is_active: true,
   };
@@ -39,10 +38,10 @@ describe("assertCanUpdateSchoolSettings", () => {
     expect(targetId).toBe("sch-1");
   });
 
-  it("resolves active school for owner when school_id is null", async () => {
+  it("resolves the singleton school for the owner", async () => {
     vi.mocked(isCurrentUserPlatformOwner).mockResolvedValue(true);
     vi.mocked(getFirstActiveSchoolId).mockResolvedValue("sch-first");
-    const targetId = await assertCanUpdateSchoolSettings({ ...baseProfile, school_id: null }, null);
+    const targetId = await assertCanUpdateSchoolSettings(baseProfile, null);
     expect(targetId).toBe("sch-first");
   });
 
@@ -51,11 +50,11 @@ describe("assertCanUpdateSchoolSettings", () => {
     vi.mocked(getFirstActiveSchoolId).mockResolvedValue(null);
 
     await expect(
-      assertCanUpdateSchoolSettings({ ...baseProfile, school_id: null }, null),
+      assertCanUpdateSchoolSettings(baseProfile, null),
     ).rejects.toThrow(/No target school specified/);
   });
 
-  it("throws ForbiddenError when non-owner specifies different school_id", async () => {
+  it("uses the singleton school for a non-owner", async () => {
     vi.mocked(isCurrentUserPlatformOwner).mockResolvedValue(false);
 
     await expect(assertCanUpdateSchoolSettings(baseProfile, "sch-diff")).rejects.toThrow(

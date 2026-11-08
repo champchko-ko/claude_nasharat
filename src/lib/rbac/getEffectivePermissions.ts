@@ -12,9 +12,8 @@ async function loadEffectivePermissions(): Promise<string[]> {
  * Every permission key the signed-in user holds. The owner receives the whole
  * catalogue; everyone else receives what the owner granted their role.
  *
- * The optional argument exists only so call sites written for the
- * multi-tenant schema keep compiling while `school_id` is removed module by
- * module. It is ignored.
+ * The optional argument is retained for compatibility with older callers and
+ * is ignored because permissions are deployment-wide.
  */
 export const getEffectivePermissions: (legacySchoolId?: string | null) => Promise<string[]> =
   loadEffectivePermissions;

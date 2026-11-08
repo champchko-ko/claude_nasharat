@@ -12,7 +12,6 @@ export async function getSchoolAchievements(
     .select(
       `
       id,
-      school_id,
       department_id,
       title_ar,
       title_en,
@@ -28,7 +27,6 @@ export async function getSchoolAchievements(
       creator:profiles!created_by(id, full_name)
     `,
     )
-    .eq("school_id", schoolId)
     .order("date_achieved", { ascending: false });
 
   if (error || !data) return [];

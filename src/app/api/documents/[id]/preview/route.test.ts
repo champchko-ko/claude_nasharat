@@ -30,7 +30,6 @@ describe("GET /api/documents/[id]/preview", () => {
       data: {
         file_path: "school-1/operational-plan/plan.pdf",
         mime_type: "application/pdf",
-        school_id: "school-1",
         is_published: false,
       },
       error: null,
@@ -56,7 +55,6 @@ describe("GET /api/documents/[id]/preview", () => {
       data: {
         file_path: "school-1/operational-plan/plan.pdf",
         mime_type: "application/pdf",
-        school_id: "school-1",
         is_published: true,
       },
       error: null,

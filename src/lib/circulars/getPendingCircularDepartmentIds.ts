@@ -8,7 +8,7 @@ import {
 import { isRemindableStatus } from "./isRemindableStatus";
 
 const CIRCULAR_COLUMNS =
-  "id, school_id, ref_number, title, category, priority, status, publish_at, due_at";
+  "id, ref_number, title, category, priority, status, publish_at, due_at";
 
 /**
  * Departments that still owe a response on one circular.
@@ -34,7 +34,7 @@ export async function getPendingCircularDepartmentIds(
     return [];
   }
 
-  const departments = await getSchoolDepartments(circular.school_id as string);
+  const departments = await getSchoolDepartments();
   const [{ data: targets, error: targetsError }, { data: responses, error: responsesError }] =
     await Promise.all([
       supabase

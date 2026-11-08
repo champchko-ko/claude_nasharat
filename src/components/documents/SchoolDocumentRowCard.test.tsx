@@ -16,7 +16,6 @@ describe("SchoolDocumentRowCard", () => {
       <SchoolDocumentRowCard
         document={{
           id: "document-1",
-          school_id: "school-1",
           slug: "operational-plan",
           title: "Operational plan",
           description: null,

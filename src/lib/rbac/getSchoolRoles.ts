@@ -65,9 +65,8 @@ async function loadRoles(): Promise<SchoolRoleRow[]> {
 /**
  * All roles except the hidden owner role, with their permissions and user counts.
  *
- * The optional argument exists only so call sites written for the multi-tenant
- * schema keep compiling while `school_id` is removed module by module. It is
- * ignored: there is one school and one set of roles.
+ * The optional argument is retained for compatibility with older callers and
+ * is ignored: there is one school and one set of roles.
  */
 export const getSchoolRoles: (legacySchoolId?: string | null) => Promise<SchoolRoleRow[]> =
   loadRoles;

@@ -19,7 +19,6 @@ const profile = {
   full_name: "User",
   email: null,
   job_title: null,
-  school_id: null,
   department_id: null,
   is_active: true,
 };

@@ -17,7 +17,7 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function addMaintenanceNoteAction(formData: FormData): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
@@ -29,7 +29,7 @@ export async function addMaintenanceNoteAction(formData: FormData): Promise<Acti
     const supabase = await createSupabaseServerClient();
     const { data: ticket, error: ticketError } = await supabase
       .from("maintenance_requests")
-      .select("id, school_id, reporter_id, assigned_operator_id")
+      .select("id, reporter_id, assigned_operator_id")
       .eq("id", requestId)
       .maybeSingle();
 
@@ -42,7 +42,7 @@ export async function addMaintenanceNoteAction(formData: FormData): Promise<Acti
     }
 
     const canAdd = await assertCanAddNote(
-      profile.school_id,
+      "singleton",
       profile.id,
       ticket.reporter_id,
       ticket.assigned_operator_id,
@@ -53,7 +53,7 @@ export async function addMaintenanceNoteAction(formData: FormData): Promise<Acti
 
     const res = await insertMaintenanceUpdate(supabase, {
       requestId,
-      schoolId: profile.school_id,
+      schoolId: "singleton",
       authorId: profile.id,
       kind: "note",
       reason: note.trim(),

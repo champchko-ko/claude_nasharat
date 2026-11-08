@@ -18,7 +18,7 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function updateMaintenanceStatusAction(formData: FormData): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
@@ -35,8 +35,8 @@ export async function updateMaintenanceStatusAction(formData: FormData): Promise
       throw new ValidationError(`Illegal transition from ${ticket.status} to ${targetStatus}`);
     }
 
-    const canAssign = await hasPermission("maintenance.assign", profile.school_id, profile.department_id);
-    const canClose = await hasPermission("maintenance.close", profile.school_id, profile.department_id);
+    const canAssign = await hasPermission("maintenance.assign", undefined, profile.department_id);
+    const canClose = await hasPermission("maintenance.close", undefined, profile.department_id);
     const authCheck = assertCanTransitionStatus({
       targetStatus,
       isReporter: ticket.reporter_id === profile.id,
@@ -51,7 +51,7 @@ export async function updateMaintenanceStatusAction(formData: FormData): Promise
 
     await applyMaintenanceStatusChange(supabase, {
       requestId,
-      schoolId: profile.school_id,
+      schoolId: "singleton",
       userId: profile.id,
       targetStatus,
       oldStatus: ticket.status,

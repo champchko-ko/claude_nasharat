@@ -38,7 +38,6 @@ export async function dispatchModuleNotification({
 }): Promise<DispatchNotificationResult> {
   const uniqueUserIds = Array.from(new Set(recipientUserIds.filter(Boolean)));
   if (!uniqueUserIds.length) return { delivered: 0 };
-  if (!schoolId) return { delivered: 0 };
 
   try {
     const adminClient = createSupabaseAdminClient();
@@ -46,7 +45,6 @@ export async function dispatchModuleNotification({
       .from("profiles")
       .select("id")
       .in("id", uniqueUserIds)
-      .eq("school_id", schoolId)
       .eq("is_active", true);
 
     if (error) {
@@ -61,7 +59,7 @@ export async function dispatchModuleNotification({
       allowedIds.map((userId) =>
         createNotificationRecord(adminClient, {
           userId,
-          schoolId,
+        schoolId: null,
           type,
           title,
           body,

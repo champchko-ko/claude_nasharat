@@ -34,7 +34,6 @@ describe("recordCredentialAudit", () => {
 
     expect(mockFrom).toHaveBeenCalledWith("audit_logs");
     expect(mockInsert).toHaveBeenCalledWith({
-      school_id: "school-1",
       actor_id: "user-1",
       actor_label: "Admin (admin@school.org)",
       action: "credentials.password_change",

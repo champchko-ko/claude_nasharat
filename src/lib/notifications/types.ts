@@ -5,7 +5,6 @@ export type NotificationEntityKind = "circular" | "maintenance_request" | "calen
 export interface NotificationRow {
   id: string;
   user_id: string;
-  school_id: string | null;
   type: NotificationType;
   title: string;
   body: string | null;

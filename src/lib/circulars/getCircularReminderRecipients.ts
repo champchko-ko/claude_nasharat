@@ -17,6 +17,7 @@ export async function getCircularReminderRecipients({
   targetType: "pending" | "all" | "custom";
   customUserIds?: string[];
 }): Promise<string[]> {
+  void schoolId;
   if (targetType === "custom") {
     return customUserIds.filter(Boolean);
   }
@@ -25,7 +26,6 @@ export async function getCircularReminderRecipients({
     const { data, error } = await supabase
       .from("profiles")
       .select("id")
-      .eq("school_id", schoolId)
       .eq("is_active", true);
 
     if (error) {

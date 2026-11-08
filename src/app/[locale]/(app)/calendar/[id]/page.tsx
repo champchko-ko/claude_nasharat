@@ -18,17 +18,17 @@ export default async function CalendarEventDetailPage({
   setRequestLocale(locale);
 
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     redirect(`/${locale}/login`);
   }
 
   const event = await getCalendarEventById(id);
-  if (!event || event.school_id !== profile.school_id) {
+  if (!event) {
     notFound();
   }
 
   const [hasManagePerm, isOwner] = await Promise.all([
-    hasPermission("calendar.manage", profile.school_id).catch(() => false),
+    hasPermission("calendar.manage").catch(() => false),
     isPlatformOwner(profile.id),
   ]);
 

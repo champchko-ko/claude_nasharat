@@ -20,19 +20,19 @@ export default async function EditCalendarEventPage({
   const t = await getTranslations("calendar");
 
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     redirect(`/${locale}/login`);
   }
 
   const event = await getCalendarEventById(id);
-  if (!event || event.school_id !== profile.school_id) {
+  if (!event) {
     notFound();
   }
 
   const [hasManagePerm, isOwner, schoolDetails] = await Promise.all([
-    hasPermission("calendar.manage", profile.school_id).catch(() => false),
+    hasPermission("calendar.manage").catch(() => false),
     isPlatformOwner(profile.id),
-    getSchoolFullDetails(profile.school_id).catch(() => null),
+    getSchoolFullDetails().catch(() => null),
   ]);
 
   const canManage = isOwner || hasManagePerm;

@@ -6,12 +6,12 @@ export async function getDepartmentMemberUserIds(
   schoolId: string,
   departmentIds: string[],
 ): Promise<string[]> {
+  void schoolId;
   if (!departmentIds.length) return [];
 
   const { data: users, error } = await supabase
     .from("profiles")
     .select("id")
-    .eq("school_id", schoolId)
     .eq("is_active", true)
     .in("department_id", departmentIds);
 

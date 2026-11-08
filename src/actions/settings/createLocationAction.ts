@@ -15,11 +15,11 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function createLocationAction(formData: FormData): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
-    const allowed = await hasPermission("settings.school.update", profile.school_id);
+    const allowed = await hasPermission("settings.school.update");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -31,7 +31,6 @@ export async function createLocationAction(formData: FormData): Promise<ActionRe
 
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase.from("locations").insert({
-      school_id: profile.school_id,
       building,
       floor,
       room,

@@ -8,7 +8,6 @@ export async function generateDocumentReferenceNumber(
 ): Promise<{ refNum?: string; error?: string }> {
   try {
     const { data: refNum, error: refError } = await supabase.rpc("next_school_number", {
-      p_school: schoolId,
       p_kind: kind,
     });
 

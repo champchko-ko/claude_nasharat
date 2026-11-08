@@ -13,8 +13,8 @@ describe("backupSchema", () => {
         schoolName: "Test School",
       },
       tables: {
-        departments: [{ id: "dept-1", name_ar: "قسم العلوم", school_id: "school-1" }],
-        locations: [{ id: "loc-1", building: "A", school_id: "school-1" }],
+        departments: [{ id: "dept-1", name_ar: "قسم العلوم" }],
+        locations: [{ id: "loc-1", building: "A" }],
       },
     };
 
