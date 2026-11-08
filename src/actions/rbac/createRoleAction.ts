@@ -4,7 +4,6 @@ import { revalidateSettingsPath } from "@/lib/settings/revalidateSettingsPath";
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { getCurrentProfile } from "@/lib/auth/getCurrentProfile";
 import { isPlatformOwner } from "@/lib/auth/isPlatformOwner";
-import { getFirstActiveSchoolId } from "@/lib/school/getFirstActiveSchoolId";
 import {
   sanitizeError,
   formatActionErrorResult,
@@ -29,12 +28,7 @@ export async function createRoleAction(
 
     const isOwner = await isPlatformOwner(profile.id);
     if (!isOwner) {
-      throw new ForbiddenError("Only the platform owner can create roles");
-    }
-
-    const schoolId = profile.school_id ?? (await getFirstActiveSchoolId());
-    if (!schoolId) {
-      throw new AuthenticationError("No school associated with profile");
+      throw new ForbiddenError("Only the owner can create roles");
     }
 
     const { trimmedName, trimmedKey } = validateCreateRoleInput(name, key);
@@ -43,7 +37,6 @@ export async function createRoleAction(
     const res = await insertRoleRow(supabase, {
       name: trimmedName,
       key: trimmedKey,
-      schoolId,
       permissionKeys,
     });
 

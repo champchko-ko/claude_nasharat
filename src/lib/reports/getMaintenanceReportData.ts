@@ -35,7 +35,6 @@ export async function getMaintenanceReportData(
       )
     `,
     )
-    .eq("school_id", schoolId)
     .order("created_at", { ascending: false });
 
   const query = applyMaintenanceReportFilters(baseQuery, filters);

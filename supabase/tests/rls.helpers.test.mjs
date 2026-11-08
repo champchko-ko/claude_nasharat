@@ -142,8 +142,8 @@ export async function seedFixture(admin) {
       .from("roles")
       .insert({
         key: `battery-auditor-${ts}`,
-        name: "Battery Auditor",
-        school_id: school.id,
+        name_ar: "مدقق البطارية",
+        name_en: "Battery Auditor",
         is_system: false,
       })
       .select("id")
@@ -196,7 +196,6 @@ export async function seedFixture(admin) {
       await admin.from("user_role_assignments").insert({
         user_id: authData.user.id,
         role_id: roleIds[roleKey],
-        school_id: schoolId,
         department_id: deptId,
       });
     }
@@ -327,7 +326,6 @@ export async function seedFixture(admin) {
     .from("user_role_assignments")
     .select("id, roles!inner(key)")
     .eq("roles.key", "owner")
-    .is("school_id", null)
     .limit(1)
     .maybeSingle();
   const { data: auditRow } = await admin.from("audit_logs").select("id").limit(1).maybeSingle();

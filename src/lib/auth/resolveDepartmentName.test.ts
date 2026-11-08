@@ -10,7 +10,6 @@ describe("resolveDepartmentName", () => {
       full_name: "John",
       email: "john@example.com",
       job_title: null,
-      school_id: "s1",
       department_id: null,
       is_active: true,
     };
@@ -23,7 +22,6 @@ describe("resolveDepartmentName", () => {
       full_name: "أمال",
       email: "amal@example.com",
       job_title: "رئيس قسم",
-      school_id: "s1",
       department_id: "d1",
       department_name_ar: "العلوم والتكنولوجيا",
       department_name_en: "Science & Tech",
@@ -39,7 +37,6 @@ describe("resolveDepartmentName", () => {
       full_name: "Amal",
       email: "amal@example.com",
       job_title: "Dept Head",
-      school_id: "s1",
       department_id: "d1",
       department_name_ar: "العلوم والتكنولوجيا",
       department_name_en: "Science & Tech",

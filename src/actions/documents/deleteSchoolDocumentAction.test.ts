@@ -76,7 +76,6 @@ describe("deleteSchoolDocumentAction", () => {
     const mockSingle = vi.fn().mockResolvedValueOnce({
       data: {
         id: "doc-123",
-        school_id: "school-123",
         slug: "operational-plan",
         file_path: "school-123/operational-plan/plan.pdf",
       },

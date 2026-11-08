@@ -11,7 +11,6 @@ export type CalendarRecurrenceFrequency = "none" | "daily" | "weekly" | "biweekl
 
 export interface CalendarEventRow {
   id: string;
-  school_id: string;
   title_ar: string;
   title_en: string | null;
   description: string | null;

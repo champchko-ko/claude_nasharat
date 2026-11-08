@@ -53,7 +53,7 @@ describe("AuditSettingsPage", () => {
   it("renders audit page when user is authorized", async () => {
     mockAssertCanViewAudit.mockResolvedValue({
       authorized: true,
-      profile: { id: "user-1", school_id: "sch-1" },
+      profile: { id: "user-1" },
       schoolId: "sch-1",
       isOwner: false,
     });

@@ -7,9 +7,7 @@ vi.mock("@/lib/supabase", () => ({
   createSupabaseServerClient: vi.fn().mockResolvedValue({
     from: () => ({
       select: () => ({
-        eq: () => ({
-          order: () => Promise.resolve({ data: mockCirculars, error: null }),
-        }),
+        order: () => Promise.resolve({ data: mockCirculars, error: null }),
       }),
     }),
   }),

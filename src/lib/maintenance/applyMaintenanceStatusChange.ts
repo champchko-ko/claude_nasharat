@@ -43,7 +43,6 @@ export async function applyMaintenanceStatusChange(
     .from("maintenance_requests")
     .update(updatePayload)
     .eq("id", requestId)
-    .eq("school_id", schoolId)
     .select("id");
 
   if (updateError) {

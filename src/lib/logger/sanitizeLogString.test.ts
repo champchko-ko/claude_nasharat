@@ -16,9 +16,9 @@ describe("sanitizeLogString", () => {
   });
 
   it("redacts email addresses from messages", () => {
-    const input = "User teacher.smith@kuwait.edu failed validation in school_id 123";
+    const input = "User teacher.smith@kuwait.edu failed validation in tenant_id 123";
     expect(sanitizeLogString(input)).toBe(
-      "User [REDACTED_EMAIL] failed validation in school_id 123",
+      "User [REDACTED_EMAIL] failed validation in tenant_id 123",
     );
   });
 

@@ -6,7 +6,6 @@ import { createSupabaseAdminClient, createSupabaseServerClient } from "@/lib/sup
 import { getCurrentProfile } from "@/lib/auth/getCurrentProfile";
 import { assertCanUpdateSchoolSettings } from "./assertCanUpdateSchoolSettings";
 import { parseSchoolFormData } from "@/lib/validation/parseSchoolFormData";
-import { cleanFormField } from "@/lib/validation/cleanFormField";
 import { uploadSchoolLogo } from "@/lib/school/uploadSchoolLogo";
 import { persistSchoolProfile } from "@/lib/school/persistSchoolProfile";
 import { AuthenticationError } from "@/lib/errors/AuthenticationError";
@@ -22,8 +21,7 @@ export async function updateSchoolAction(formData: FormData): Promise<ActionResu
       throw new AuthenticationError("User is not authenticated");
     }
 
-    const formSchoolId = cleanFormField(formData.get("school_id"));
-    const targetSchoolId = await assertCanUpdateSchoolSettings(profile, formSchoolId);
+    const targetSchoolId = await assertCanUpdateSchoolSettings(profile);
 
     const parsed = parseSchoolFormData(formData);
     if (!parsed.nameAr || !parsed.nameEn) {

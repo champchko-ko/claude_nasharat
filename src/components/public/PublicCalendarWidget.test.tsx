@@ -15,7 +15,6 @@ describe("PublicCalendarWidget", () => {
       date: "2026-11-01T08:00:00Z",
       event: {
         id: "ev-1",
-        school_id: "s-1",
         title_ar: "اختبارات منتصف الفصل الدراسي",
         title_en: "Midterm Exams",
         description: null,

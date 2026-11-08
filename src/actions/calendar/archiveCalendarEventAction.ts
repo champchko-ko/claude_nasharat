@@ -9,7 +9,7 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 
 export async function archiveCalendarEventAction(eventId: string): Promise<ActionResult> {
   try {
-    const auth = await assertCanManageCalendar();
+    await assertCanManageCalendar();
     const supabase = await createSupabaseServerClient();
     const { error } = await supabase
       .from("calendar_events")
@@ -18,7 +18,7 @@ export async function archiveCalendarEventAction(eventId: string): Promise<Actio
         updated_at: new Date().toISOString(),
       })
       .eq("id", eventId)
-      .eq("school_id", auth.schoolId);
+      ;
 
     if (error) {
       throw mapDatabaseError(error);

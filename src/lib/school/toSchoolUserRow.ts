@@ -5,8 +5,13 @@ export function toSchoolUserRow(
   row: RawProfileQueryResult,
   explicitIsOwner?: boolean,
 ): MappedSchoolUser {
+  const assignments = Array.isArray(row.user_role_assignments)
+    ? row.user_role_assignments
+    : row.user_role_assignments
+      ? [row.user_role_assignments]
+      : [];
   const isOwner =
-    explicitIsOwner ?? Boolean(row.user_role_assignments?.some((a) => a.roles?.key === "owner"));
+    explicitIsOwner ?? Boolean(assignments.some((a) => a.roles?.key === "owner"));
   const deptName = row.departments?.name_ar ?? row.departments?.name_en ?? null;
 
   return {
@@ -18,7 +23,7 @@ export function toSchoolUserRow(
     department_id: row.department_id,
     department_name: deptName,
     is_active: row.is_active,
-    role_key: resolveUserRoleKey(row.user_role_assignments),
+    role_key: resolveUserRoleKey(assignments),
     is_owner: isOwner,
   };
 }

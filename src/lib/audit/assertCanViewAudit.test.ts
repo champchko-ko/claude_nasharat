@@ -32,8 +32,8 @@ describe("assertCanViewAudit", () => {
     expect(result.authorized).toBe(false);
   });
 
-  it("authorizes platform owner even without school_id", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "owner-1", school_id: null });
+  it("authorizes platform owner", async () => {
+    mockGetCurrentProfile.mockResolvedValue({ id: "owner-1" });
     mockIsPlatformOwner.mockResolvedValue(true);
 
     const result = await assertCanViewAudit();
@@ -45,7 +45,7 @@ describe("assertCanViewAudit", () => {
   });
 
   it("authorizes user with audit.view permission", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "user-1", school_id: "sch-1" });
+    mockGetCurrentProfile.mockResolvedValue({ id: "user-1" });
     mockIsPlatformOwner.mockResolvedValue(false);
     mockHasPermission.mockResolvedValue(true);
 
@@ -58,7 +58,7 @@ describe("assertCanViewAudit", () => {
   });
 
   it("denies user without audit.view permission", async () => {
-    mockGetCurrentProfile.mockResolvedValue({ id: "user-2", school_id: "sch-1" });
+    mockGetCurrentProfile.mockResolvedValue({ id: "user-2" });
     mockIsPlatformOwner.mockResolvedValue(false);
     mockHasPermission.mockResolvedValue(false);
 

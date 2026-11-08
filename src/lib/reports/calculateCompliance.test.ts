@@ -5,7 +5,6 @@ import type { DepartmentRow } from "@/lib/school/getSchoolDepartments";
 function department(id: string, name: string, isActive = true): DepartmentRow {
   return {
     id,
-    school_id: "s1",
     name_ar: name,
     name_en: name,
     is_active: isActive,

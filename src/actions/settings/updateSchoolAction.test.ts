@@ -61,13 +61,12 @@ describe("updateSchoolAction", () => {
     expect(result.error).toMatch(/authenticated/i);
   });
 
-  it("allows platform owner when profile.school_id is null by resolving active school", async () => {
+  it("allows platform owner to update the singleton school", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "owner-1",
       full_name: "Owner",
       email: "owner@test.com",
       job_title: null,
-      school_id: null,
       department_id: null,
       is_active: true,
     });
@@ -97,7 +96,6 @@ describe("updateSchoolAction", () => {
       full_name: "Teacher",
       email: "teacher@test.com",
       job_title: null,
-      school_id: "school-1",
       department_id: null,
       is_active: true,
     });
@@ -119,20 +117,18 @@ describe("updateSchoolAction", () => {
       full_name: "Admin",
       email: "admin@test.com",
       job_title: null,
-      school_id: "school-1",
       department_id: null,
       is_active: true,
     });
     vi.mocked(isCurrentUserPlatformOwner).mockResolvedValue(false);
 
     const formData = new FormData();
-    formData.append("school_id", "school-different");
     formData.append("name_ar", "مدرسة");
     formData.append("name_en", "School");
 
     const result = await updateSchoolAction(formData);
     expect(result.success).toBe(false);
-    expect(result.error).toMatch(/different school/i);
+    expect(result.error).toMatch(/unauthorized/i);
   });
 
   it("rejects if Arabic or English name is missing", async () => {
@@ -141,7 +137,6 @@ describe("updateSchoolAction", () => {
       full_name: "Admin",
       email: "admin@test.com",
       job_title: null,
-      school_id: "school-1",
       department_id: null,
       is_active: true,
     });

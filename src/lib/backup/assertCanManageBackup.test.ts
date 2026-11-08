@@ -23,7 +23,6 @@ describe("assertCanManageBackup", () => {
     vi.spyOn(getCurrentProfileModule, "getCurrentProfile").mockResolvedValue({
       id: "owner-1",
       email: "owner@school.edu",
-      school_id: null,
       full_name: "Platform Owner",
       job_title: null,
       department_id: null,
@@ -40,7 +39,6 @@ describe("assertCanManageBackup", () => {
     vi.spyOn(getCurrentProfileModule, "getCurrentProfile").mockResolvedValue({
       id: "manager-1",
       email: "principal@school.edu",
-      school_id: "school-123",
       full_name: "School Principal",
       job_title: null,
       department_id: null,
@@ -57,7 +55,6 @@ describe("assertCanManageBackup", () => {
     vi.spyOn(getCurrentProfileModule, "getCurrentProfile").mockResolvedValue({
       id: "staff-1",
       email: "staff@school.edu",
-      school_id: "school-123",
       full_name: "Teacher",
       job_title: null,
       department_id: "dept-1",

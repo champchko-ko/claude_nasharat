@@ -14,7 +14,7 @@ export type BackupTableSpec = {
 
 export const BACKUP_TABLES: readonly BackupTableSpec[] = [
   { name: "schools", conflictColumns: ["id"], orderColumns: ["id"] },
-  { name: "school_settings", conflictColumns: ["school_id"], orderColumns: ["school_id"] },
+  { name: "school_settings", conflictColumns: ["singleton"], orderColumns: ["singleton"] },
   { name: "departments", conflictColumns: ["id"], orderColumns: ["id"] },
   { name: "locations", conflictColumns: ["id"], orderColumns: ["id"] },
   { name: "roles", conflictColumns: ["id"], orderColumns: ["id"] },
@@ -27,8 +27,8 @@ export const BACKUP_TABLES: readonly BackupTableSpec[] = [
   { name: "user_role_assignments", conflictColumns: ["id"], orderColumns: ["id"] },
   {
     name: "school_sequences",
-    conflictColumns: ["school_id", "kind", "year"],
-    orderColumns: ["school_id", "kind", "year"],
+    conflictColumns: ["kind", "year"],
+    orderColumns: ["kind", "year"],
   },
   { name: "circulars", conflictColumns: ["id"], orderColumns: ["id"] },
   { name: "circular_targets", conflictColumns: ["id"], orderColumns: ["id"] },

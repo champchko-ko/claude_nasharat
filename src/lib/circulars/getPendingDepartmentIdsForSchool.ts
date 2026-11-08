@@ -21,9 +21,10 @@ export async function getPendingDepartmentIdsForSchool(
   supabase: SupabaseClient,
   schoolId: string,
 ): Promise<string[]> {
+  void schoolId;
   const [{ data: circulars, error: circularsError }, departments] = await Promise.all([
-    supabase.from("circulars").select(CIRCULAR_COLUMNS).eq("school_id", schoolId),
-    getSchoolDepartments(schoolId),
+    supabase.from("circulars").select(CIRCULAR_COLUMNS),
+    getSchoolDepartments(),
   ]);
 
   if (circularsError) {

@@ -14,11 +14,11 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function deleteLocationAction(locationId: string): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
-    const allowed = await hasPermission("settings.school.update", profile.school_id);
+    const allowed = await hasPermission("settings.school.update");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -27,8 +27,7 @@ export async function deleteLocationAction(locationId: string): Promise<ActionRe
     const { error, count } = await supabase
       .from("locations")
       .delete({ count: "exact" })
-      .eq("id", locationId)
-      .eq("school_id", profile.school_id);
+      .eq("id", locationId);
 
     if (error) {
       if (error.code === "23503") {

@@ -18,7 +18,7 @@ describe("applyAuditQueryFilters", () => {
       endDate: "2026-10-31",
     });
 
-    expect(mockQuery.eq).toHaveBeenCalledWith("school_id", "sch-1");
+    expect(mockQuery.eq).not.toHaveBeenCalledWith("tenant_id", "sch-1");
     expect(mockQuery.ilike).toHaveBeenCalledWith("action", "%update%");
     expect(mockQuery.eq).toHaveBeenCalledWith("entity_type", "profiles");
     expect(mockQuery.ilike).toHaveBeenCalledWith("actor_label", "%Alice%");

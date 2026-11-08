@@ -25,21 +25,21 @@ export default async function MaintenanceDetailPage({
   setRequestLocale(locale);
 
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     redirect(`/${locale}/login`);
   }
 
   const ticket = await getMaintenanceRequestById(id);
-  if (!ticket || ticket.school_id !== profile.school_id) {
+  if (!ticket) {
     notFound();
   }
 
   const [updates, attachments, operators, canAssign, canClose] = await Promise.all([
     getMaintenanceUpdates(id),
     getMaintenanceAttachments(id),
-    getMaintenanceOperators(profile.school_id),
-    hasPermission("maintenance.assign", profile.school_id, profile.department_id).catch(() => false),
-    hasPermission("maintenance.close", profile.school_id, profile.department_id).catch(() => false),
+    getMaintenanceOperators("singleton"),
+    hasPermission("maintenance.assign", undefined, profile.department_id).catch(() => false),
+    hasPermission("maintenance.close", undefined, profile.department_id).catch(() => false),
   ]);
 
   const isReporter = ticket.reporter_id === profile.id;

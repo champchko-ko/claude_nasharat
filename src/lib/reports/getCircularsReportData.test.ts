@@ -24,7 +24,6 @@ describe("getCircularsReportData", () => {
     vi.mocked(getSchoolDepartments).mockResolvedValue([
       {
         id: "dept-1",
-        school_id: "school-1",
         name_ar: "قسم 1",
         name_en: "Dept 1",
         is_active: true,
@@ -164,7 +163,6 @@ describe("getCircularsReportData", () => {
     vi.mocked(getSchoolDepartments).mockResolvedValue([
       {
         id: "d1",
-        school_id: "school-1",
         name_ar: "العلوم",
         name_en: "Science",
         is_active: true,
@@ -172,7 +170,6 @@ describe("getCircularsReportData", () => {
       },
       {
         id: "d2",
-        school_id: "school-1",
         name_ar: "الرياضيات",
         name_en: "Math",
         is_active: true,

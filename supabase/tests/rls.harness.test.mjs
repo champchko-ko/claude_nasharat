@@ -32,7 +32,6 @@ try {
     .from("user_role_assignments")
     .select("id")
     .eq("user_id", fx.users.staff2.id)
-    .eq("school_id", fx.schoolId)
     .maybeSingle();
 
   await expectDenied("control: admin deleting another user's assignment is allowed", () =>

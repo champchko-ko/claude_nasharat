@@ -1,23 +1,5 @@
 import type { DatabaseBackupPayload } from "./types";
 
-const TENANT_TABLES = [
-  "school_settings",
-  "departments",
-  "locations",
-  "roles",
-  "profiles",
-  "user_role_assignments",
-  "school_sequences",
-  "circulars",
-  "circular_targets",
-  "circular_responses",
-  "maintenance_requests",
-  "maintenance_assignments",
-  "maintenance_updates",
-  "calendar_events",
-  "school_achievements",
-] as const;
-
 /**
  * Rejects a school-scoped file that carries rows for another tenant.
  *
@@ -39,12 +21,9 @@ export function assertBackupTenantScope(payload: DatabaseBackupPayload): void {
     }
   }
 
-  for (const table of TENANT_TABLES) {
-    const rows = payload.tables[table] ?? [];
-    for (const row of rows) {
-      if (row.school_id !== schoolId) {
-        throw new Error(`Backup table ${table} contains a row outside the restore target`);
-      }
+  for (const row of payload.tables.school_settings ?? []) {
+    if (row.singleton !== true) {
+      throw new Error("Backup school settings must target singleton=true");
     }
   }
 }

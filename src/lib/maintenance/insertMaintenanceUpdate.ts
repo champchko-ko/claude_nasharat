@@ -14,7 +14,6 @@ export async function insertMaintenanceUpdate(
 ): Promise<{ error?: string }> {
   const { error } = await supabase.from("maintenance_updates").insert({
     request_id: params.requestId,
-    school_id: params.schoolId,
     author_id: params.authorId,
     kind: params.kind,
     old_value: params.oldValue ?? null,

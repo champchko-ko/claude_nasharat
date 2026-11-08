@@ -10,8 +10,7 @@ export async function hasAnyPlatformOwner(): Promise<boolean> {
   const { count, error } = await admin
     .from("user_role_assignments")
     .select("id, roles!inner(key)", { count: "exact", head: true })
-    .eq("roles.key", "owner")
-    .is("school_id", null);
+    .eq("roles.key", "owner");
   if (error) throw mapDatabaseError(error, "Platform owner check failed");
   return (count ?? 0) > 0;
 }

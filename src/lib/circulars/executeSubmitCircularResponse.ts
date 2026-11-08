@@ -28,7 +28,6 @@ export async function executeSubmitCircularResponse({
 
   const { error: rpcError } = await supabase.rpc("submit_circular_response", {
     p_circular_id: circularId,
-    p_school_id: schoolId,
     p_department_id: departmentId,
     p_response_type: responseType,
     p_status: status,
@@ -56,7 +55,6 @@ export async function executeSubmitCircularResponse({
 
     const { error: insertError } = await supabase.from("circular_responses").insert({
       circular_id: circularId,
-      school_id: schoolId,
       department_id: departmentId,
       responder_id: responderId,
       response_type: responseType,

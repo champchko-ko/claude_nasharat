@@ -22,8 +22,8 @@ export default async function EditCircularPage({
 
   const [circular, departments, perms, isOwner] = await Promise.all([
     getCircularById(id),
-    getSchoolDepartments(profile.school_id),
-    getEffectivePermissions(profile.school_id).catch((): string[] => []),
+    getSchoolDepartments("singleton"),
+    getEffectivePermissions().catch((): string[] => []),
     isPlatformOwner(profile.id),
   ]);
 

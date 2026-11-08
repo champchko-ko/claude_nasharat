@@ -6,9 +6,8 @@ vi.mock("@/lib/supabase", () => ({
   createSupabaseAdminClient: vi.fn(),
 }));
 
-function mockAdmin(isResult: unknown) {
-  const isMock = vi.fn().mockResolvedValue(isResult);
-  const eqMock = vi.fn().mockReturnValue({ is: isMock });
+function mockAdmin(eqResult: unknown) {
+  const eqMock = vi.fn().mockResolvedValue(eqResult);
   const selectMock = vi.fn().mockReturnValue({ eq: eqMock });
   const fromMock = vi.fn().mockReturnValue({ select: selectMock });
 
@@ -16,12 +15,12 @@ function mockAdmin(isResult: unknown) {
     from: fromMock,
   } as unknown as ReturnType<typeof createSupabaseAdminClient>);
 
-  return { isMock };
+  return { eqMock };
 }
 
 describe("getPlatformOwnerUserIds", () => {
   it("returns set of owner user IDs when found", async () => {
-    const { isMock } = mockAdmin({
+    const { eqMock } = mockAdmin({
       data: [{ user_id: "owner-1" }, { user_id: "owner-2" }],
       error: null,
     });
@@ -30,9 +29,8 @@ describe("getPlatformOwnerUserIds", () => {
     expect(res.size).toBe(2);
     expect(res.has("owner-1")).toBe(true);
     expect(res.has("owner-2")).toBe(true);
-    // Platform ownership is a GLOBAL assignment; a school-scoped role keyed
-    // "owner" must never count (audit finding B-1).
-    expect(isMock).toHaveBeenCalledWith("school_id", null);
+    // There is one school, so ownership is simply the `owner` role.
+    expect(eqMock).toHaveBeenCalledWith("roles.key", "owner");
   });
 
   it("returns empty set on error or no data", async () => {

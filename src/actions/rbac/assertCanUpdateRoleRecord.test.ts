@@ -2,71 +2,48 @@ import { describe, it, expect, vi } from "vitest";
 import { assertCanUpdateRoleRecord } from "./assertCanUpdateRoleRecord";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+function clientReturning(role: unknown) {
+  return {
+    from: vi.fn(() => ({
+      select: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      maybeSingle: vi.fn().mockResolvedValue({ data: role, error: null }),
+    })),
+  } as unknown as SupabaseClient;
+}
+
 describe("assertCanUpdateRoleRecord", () => {
-  it("allows owner to update any role including system roles", async () => {
-    const supabase = {
-      from: vi.fn(() => ({
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        maybeSingle: vi.fn().mockResolvedValue({
-          data: { id: "sys-role-1", is_system: true, school_id: null },
-          error: null,
-        }),
-      })),
-    } as unknown as SupabaseClient;
-
-    await expect(
-      assertCanUpdateRoleRecord(supabase, "sys-role-1", "school-1", true),
-    ).resolves.toBeUndefined();
+  it("lets the owner edit a system role and reports it as a system role", async () => {
+    const supabase = clientReturning({ id: "r1", is_system: true, is_locked: false });
+    await expect(assertCanUpdateRoleRecord(supabase, "r1", true)).resolves.toEqual({
+      isSystem: true,
+    });
   });
 
-  it("throws ForbiddenError when non-owner tries to update system role", async () => {
-    const supabase = {
-      from: vi.fn(() => ({
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        maybeSingle: vi.fn().mockResolvedValue({
-          data: { id: "sys-role-1", is_system: true, school_id: null },
-          error: null,
-        }),
-      })),
-    } as unknown as SupabaseClient;
-
-    await expect(
-      assertCanUpdateRoleRecord(supabase, "sys-role-1", "school-1", false),
-    ).rejects.toThrow("Cannot modify system or unauthorized roles");
+  it("lets the owner edit a custom role", async () => {
+    const supabase = clientReturning({ id: "r2", is_system: false, is_locked: false });
+    await expect(assertCanUpdateRoleRecord(supabase, "r2", true)).resolves.toEqual({
+      isSystem: false,
+    });
   });
 
-  it("allows non-owner to update their own school custom role", async () => {
-    const supabase = {
-      from: vi.fn(() => ({
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        maybeSingle: vi.fn().mockResolvedValue({
-          data: { id: "custom-role-1", is_system: false, school_id: "school-1" },
-          error: null,
-        }),
-      })),
-    } as unknown as SupabaseClient;
-
-    await expect(
-      assertCanUpdateRoleRecord(supabase, "custom-role-1", "school-1", false),
-    ).resolves.toBeUndefined();
+  it("refuses everyone but the owner", async () => {
+    const supabase = clientReturning({ id: "r2", is_system: false, is_locked: false });
+    await expect(assertCanUpdateRoleRecord(supabase, "r2", false)).rejects.toThrow(
+      "Only the owner can modify roles",
+    );
   });
 
-  it("throws ForbiddenError when role is not found", async () => {
-    const supabase = {
-      from: vi.fn(() => ({
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        maybeSingle: vi.fn().mockResolvedValue({
-          data: null,
-          error: null,
-        }),
-      })),
-    } as unknown as SupabaseClient;
+  it("refuses to edit the locked owner role, even for the owner", async () => {
+    const supabase = clientReturning({ id: "r3", is_system: true, is_locked: true });
+    await expect(assertCanUpdateRoleRecord(supabase, "r3", true)).rejects.toThrow(
+      "The owner role is locked",
+    );
+  });
 
-    await expect(assertCanUpdateRoleRecord(supabase, "missing", "school-1", true)).rejects.toThrow(
+  it("refuses an unknown role", async () => {
+    const supabase = clientReturning(null);
+    await expect(assertCanUpdateRoleRecord(supabase, "missing", true)).rejects.toThrow(
       "Role not found",
     );
   });

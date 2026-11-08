@@ -1,12 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/** Resolves a seeded system role (school_id is null) by its key. */
+/** Resolves a seeded global system role by its key. */
 export async function resolveSystemRoleId(admin: SupabaseClient, roleKey: string): Promise<string> {
   const { data, error } = await admin
     .from("roles")
     .select("id")
     .eq("key", roleKey)
-    .is("school_id", null)
     .single();
 
   if (error || !data) {

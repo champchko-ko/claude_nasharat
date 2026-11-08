@@ -29,8 +29,6 @@ export async function restoreDatabaseBackup(
 
   const { data, error } = await admin.rpc("restore_backup", {
     p_tables: payload.tables,
-    p_scope: payload.metadata.scope,
-    p_school: payload.metadata.scope === "school" ? payload.metadata.schoolId : null,
     p_actor: access.userId,
   });
 

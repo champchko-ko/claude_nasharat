@@ -58,7 +58,6 @@ describe("updateSchoolDocumentAction", () => {
     const mockSingle = vi.fn().mockResolvedValueOnce({
       data: {
         id: "doc-123",
-        school_id: "school-123",
         slug: "operational-plan",
         file_path: "school-123/operational-plan/old.pdf",
       },
@@ -102,7 +101,6 @@ describe("updateSchoolDocumentAction", () => {
     const mockSingle = vi.fn().mockResolvedValueOnce({
       data: {
         id: "doc-123",
-        school_id: "school-123",
         slug: "operational-plan",
         file_path: "school-123/operational-plan/old.pdf",
       },

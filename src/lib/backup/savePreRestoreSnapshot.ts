@@ -20,7 +20,6 @@ export async function savePreRestoreSnapshot(
   const { data, error } = await admin
     .from("backup_snapshots")
     .insert({
-      school_id: targetSchoolId,
       created_by: access.userId,
       reason: "pre-restore",
       table_counts: current.metadata.tableCounts ?? {},

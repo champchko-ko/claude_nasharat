@@ -27,7 +27,6 @@ describe("assertCanAccessSettings", () => {
     vi.mocked(getCurrentProfile).mockResolvedValueOnce({
       id: "u1",
       full_name: "Owner",
-      school_id: "s1",
     } as unknown as ProfileRow);
     vi.mocked(getEffectivePermissions).mockResolvedValueOnce([]);
     vi.mocked(isPlatformOwner).mockResolvedValueOnce(true);
@@ -41,7 +40,6 @@ describe("assertCanAccessSettings", () => {
     vi.mocked(getCurrentProfile).mockResolvedValueOnce({
       id: "u2",
       full_name: "Dept Head",
-      school_id: "s1",
     } as unknown as ProfileRow);
     vi.mocked(getEffectivePermissions).mockResolvedValueOnce([
       "circular.respond",
@@ -58,7 +56,6 @@ describe("assertCanAccessSettings", () => {
     vi.mocked(getCurrentProfile).mockResolvedValueOnce({
       id: "u3",
       full_name: "Admin",
-      school_id: "s1",
     } as unknown as ProfileRow);
     vi.mocked(getEffectivePermissions).mockResolvedValueOnce(["settings.school.update"]);
     vi.mocked(isPlatformOwner).mockResolvedValueOnce(false);

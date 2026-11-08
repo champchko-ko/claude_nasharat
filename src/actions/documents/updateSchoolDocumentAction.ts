@@ -47,7 +47,7 @@ export async function updateSchoolDocumentAction(
       .from("school_documents")
       .update(updatePayload)
       .eq("id", id)
-      .eq("school_id", auth.schoolId);
+      ;
 
     if (updateError) {
       throw mapDatabaseError(updateError, "Failed to update document");

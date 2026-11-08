@@ -2,7 +2,6 @@ export type SchoolDocumentSlug = "operational-plan" | "committees-guide" | "coun
 
 export interface SchoolDocumentRow {
   id: string;
-  school_id: string;
   slug: SchoolDocumentSlug;
   title: string;
   description: string | null;

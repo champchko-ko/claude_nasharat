@@ -21,7 +21,7 @@ export async function deleteCircularAttachmentAction(
       throw new AuthenticationError("Unauthorized");
     }
 
-    await assertCanDeleteAttachment(profile.school_id, profile.id);
+    await assertCanDeleteAttachment("singleton", profile.id);
 
     const supabase = await createSupabaseServerClient();
     const { data: attachment, error: readError } = await supabase

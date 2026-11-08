@@ -13,9 +13,7 @@ export function applyAuditQueryFilters<T extends FilterableAuditQuery>(
   filters?: AuditLogFilters,
 ): T {
   let q = query;
-  if (schoolId) {
-    q = q.eq("school_id", schoolId);
-  }
+  void schoolId;
   if (!filters) {
     return q;
   }

@@ -13,6 +13,14 @@ vi.mock("@/lib/documents/getActorDetails", () => ({
   getActorDetails: vi.fn(() => ({ actorId: "user-1" })),
 }));
 
+vi.mock("@/lib/school/getFirstActiveSchoolId", () => ({
+  getFirstActiveSchoolId: vi.fn().mockResolvedValue("school-1"),
+}));
+
+vi.mock("@/lib/documents/isPublicDocumentPreviewAllowed", () => ({
+  isPublicDocumentPreviewAllowed: vi.fn().mockResolvedValue(false),
+}));
+
 vi.mock("@/lib/supabase", () => ({
   createSupabaseAdminClient: vi.fn(() => mockAdmin),
 }));
@@ -30,7 +38,6 @@ describe("GET /api/documents/[id]/preview", () => {
       data: {
         file_path: "school-1/operational-plan/plan.pdf",
         mime_type: "application/pdf",
-        school_id: "school-1",
         is_published: false,
       },
       error: null,
@@ -46,7 +53,7 @@ describe("GET /api/documents/[id]/preview", () => {
     expect(response.status).toBe(404);
   });
 
-  it("returns an authorized document with frame-safe headers", async () => {
+  it("returns an authorized document with same-origin PDF headers", async () => {
     mockAssertCanManageDocuments.mockResolvedValue({
       allowed: true,
       schoolId: "school-1",
@@ -56,7 +63,6 @@ describe("GET /api/documents/[id]/preview", () => {
       data: {
         file_path: "school-1/operational-plan/plan.pdf",
         mime_type: "application/pdf",
-        school_id: "school-1",
         is_published: true,
       },
       error: null,

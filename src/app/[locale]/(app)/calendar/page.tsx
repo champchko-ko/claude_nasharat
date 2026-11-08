@@ -11,10 +11,10 @@ export default async function CalendarPage({ params }: { params: Promise<{ local
   setRequestLocale(locale);
 
   const profile = await getCurrentProfile();
-  const schoolId = profile?.school_id;
+  const schoolId = profile ? "singleton" : null;
 
   const [hasManagePerm, events, circulars, isOwner] = await Promise.all([
-    schoolId ? hasPermission("calendar.manage", schoolId, profile?.department_id).catch(() => false) : false,
+    profile ? hasPermission("calendar.manage", undefined, profile.department_id).catch(() => false) : false,
     getSchoolCalendarEvents(schoolId),
     getSchoolCirculars(schoolId).catch(() => []),
     isCurrentUserPlatformOwner(profile?.id),

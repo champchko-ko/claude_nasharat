@@ -17,11 +17,11 @@ export default async function CircularsPage({ params }: { params: Promise<{ loca
 
   const profile = await getCurrentProfile();
   const [circulars, departments, isOwner, hasPerm] = await Promise.all([
-    getSchoolCirculars(profile?.school_id),
-    getSchoolDepartments(profile?.school_id),
+    getSchoolCirculars("singleton"),
+    getSchoolDepartments("singleton"),
     isCurrentUserPlatformOwner(profile?.id),
-    profile?.school_id
-      ? hasPermission("circular.create", profile.school_id).catch(() => false)
+    profile
+      ? hasPermission("circular.create").catch(() => false)
       : false,
   ]);
   const canCreate = isOwner || hasPerm;

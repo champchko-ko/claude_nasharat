@@ -8,18 +8,18 @@ export async function assertCanAssignMaintenance(): Promise<{
   profileId: string;
 }> {
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     throw new AuthenticationError("No school associated with profile");
   }
 
   const allowed = await hasPermission(
     "maintenance.assign",
-    profile.school_id,
+    undefined,
     profile.department_id,
   );
   if (!allowed) {
     throw new ForbiddenError("Unauthorized");
   }
 
-  return { schoolId: profile.school_id, profileId: profile.id };
+  return { schoolId: "singleton", profileId: profile.id };
 }

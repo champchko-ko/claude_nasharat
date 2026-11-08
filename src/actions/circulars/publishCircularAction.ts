@@ -14,11 +14,9 @@ import { formatActionErrorResult, type ActionResult } from "@/lib/errors/formatA
 export async function publishCircularAction(circularId: string): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
-      throw new AuthenticationError("No school associated with profile");
-    }
+    if (!profile) throw new AuthenticationError("Not authenticated");
 
-    const allowed = await hasPermission("circular.publish", profile.school_id);
+    const allowed = await hasPermission("circular.publish");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -31,7 +29,7 @@ export async function publishCircularAction(circularId: string): Promise<ActionR
         publish_at: new Date().toISOString(),
       })
       .eq("id", circularId)
-      .eq("school_id", profile.school_id);
+      ;
 
     if (error) {
       throw mapDatabaseError(error);
@@ -54,7 +52,7 @@ export async function publishCircularAction(circularId: string): Promise<ActionR
     if (headIds.length > 0) {
       void dispatchModuleNotification({
         recipientUserIds: headIds,
-        schoolId: profile.school_id,
+        schoolId: null,
         type: "circular",
         title: "circular_published",
         body: "circular_published",

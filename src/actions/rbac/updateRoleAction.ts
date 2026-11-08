@@ -29,7 +29,7 @@ export async function updateRoleAction(
 
     const isOwner = await isPlatformOwner(profile.id);
     if (!isOwner) {
-      throw new ForbiddenError("Only the platform owner can update roles and permissions");
+      throw new ForbiddenError("Only the owner can update roles and permissions");
     }
 
     const trimmedName = name.trim();
@@ -38,15 +38,20 @@ export async function updateRoleAction(
     }
 
     const supabase = await createSupabaseServerClient();
-    await assertCanUpdateRoleRecord(supabase, roleId, profile.school_id, isOwner);
+    const role = await assertCanUpdateRoleRecord(supabase, roleId, isOwner);
 
-    const { error: updateError } = await supabase
-      .from("roles")
-      .update({ name: trimmedName })
-      .eq("id", roleId);
+    // System role names are translated from the message catalogue; the edit
+    // form shows that translated text, so saving it must not overwrite the
+    // stored Arabic and English names.
+    if (!role.isSystem) {
+      const { error: updateError } = await supabase
+        .from("roles")
+        .update({ name_ar: trimmedName, name_en: trimmedName })
+        .eq("id", roleId);
 
-    if (updateError) {
-      throw mapDatabaseError(updateError);
+      if (updateError) {
+        throw mapDatabaseError(updateError);
+      }
     }
 
     await syncRolePermissions(supabase, roleId, permissionKeys);

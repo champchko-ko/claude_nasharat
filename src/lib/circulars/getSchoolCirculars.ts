@@ -5,7 +5,7 @@ import { logError } from "@/lib/logger";
 import type { CircularRow } from "./types";
 
 const SELECT_WITH_VISIBILITY = `
-  id, school_id, ref_number, title, body, category, priority, status, visibility,
+  id, ref_number, title, body, category, priority, status, visibility,
   response_type, response_instructions, allow_response_revision,
   publish_at, due_at, created_by, closed_at, created_at,
   targets:circular_targets(
@@ -13,12 +13,12 @@ const SELECT_WITH_VISIBILITY = `
     departments(id, name_ar, name_en)
   ),
   attachments:circular_attachments(
-    id, circular_id, school_id, path, mime, size_bytes, uploaded_by, created_at
+    id, circular_id, path, mime, size_bytes, uploaded_by, created_at
   )
 `;
 
 const SELECT_WITHOUT_VISIBILITY = `
-  id, school_id, ref_number, title, body, category, priority, status,
+  id, ref_number, title, body, category, priority, status,
   response_type, response_instructions, allow_response_revision,
   publish_at, due_at, created_by, closed_at, created_at,
   targets:circular_targets(
@@ -26,7 +26,7 @@ const SELECT_WITHOUT_VISIBILITY = `
     departments(id, name_ar, name_en)
   ),
   attachments:circular_attachments(
-    id, circular_id, school_id, path, mime, size_bytes, uploaded_by, created_at
+    id, circular_id, path, mime, size_bytes, uploaded_by, created_at
   )
 `;
 
@@ -37,7 +37,6 @@ export async function getSchoolCirculars(schoolId?: string | null): Promise<Circ
   const { data, error } = await supabase
     .from("circulars")
     .select(SELECT_WITH_VISIBILITY)
-    .eq("school_id", schoolId)
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -51,7 +50,6 @@ export async function getSchoolCirculars(schoolId?: string | null): Promise<Circ
       const fallback = await supabase
         .from("circulars")
         .select(SELECT_WITHOUT_VISIBILITY)
-        .eq("school_id", schoolId)
         .order("created_at", { ascending: false });
 
       if (fallback.error) {

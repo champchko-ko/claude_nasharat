@@ -47,7 +47,6 @@ describe("getCircularAttachments", () => {
       {
         id: "att-1",
         circular_id: "circ-123",
-        school_id: "sch-1",
         path: "circ-123/doc1.pdf",
         mime: "application/pdf",
         size_bytes: 1024,
@@ -57,7 +56,6 @@ describe("getCircularAttachments", () => {
       {
         id: "att-2",
         circular_id: "circ-123",
-        school_id: "sch-1",
         path: "circ-123/doc2.pdf",
         mime: "application/pdf",
         size_bytes: 2048,

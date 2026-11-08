@@ -25,7 +25,7 @@ describe("assertCanRegisterAchievement", () => {
     vi.spyOn(authModule, "isPlatformOwner").mockResolvedValueOnce(false);
 
     await expect(
-      assertCanRegisterAchievement({ id: "staff-1", school_id: "school-1", department_id: null }),
+      assertCanRegisterAchievement({ id: "staff-1", department_id: null }),
     ).rejects.toThrow(ForbiddenError);
   });
 
@@ -43,7 +43,6 @@ describe("assertCanRegisterAchievement", () => {
 
     const result = await assertCanRegisterAchievement({
       id: "owner-1",
-      school_id: null,
       department_id: null,
     });
 

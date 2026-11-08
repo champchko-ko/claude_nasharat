@@ -1,13 +1,12 @@
 import { isPlatformOwner } from "@/lib/auth/isPlatformOwner";
 
 export async function verifyManageTargetUser(
-  target: { id: string; school_id: string | null } | null,
-  callerSchoolId: string | null,
+  target: { id: string } | null,
   isCallerOwner: boolean,
   targetRoleKey?: string | null,
 ): Promise<{ allowed: boolean; error?: string }> {
-  if (!target || (!isCallerOwner && target.school_id !== callerSchoolId)) {
-    return { allowed: false, error: "User not found in this school" };
+  if (!target) {
+    return { allowed: false, error: "User not found" };
   }
 
   if (await isPlatformOwner(target.id)) {

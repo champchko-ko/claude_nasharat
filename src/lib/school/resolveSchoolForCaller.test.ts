@@ -20,11 +20,11 @@ describe("resolveSchoolForCaller", () => {
     vi.clearAllMocks();
   });
 
-  it("returns caller school_id when profile has a school", async () => {
-    const res = await resolveSchoolForCaller({ id: "user-1", school_id: "school-123" });
+  it("returns the singleton school for any authenticated profile", async () => {
+    mockGetFirstSchool.mockResolvedValue("school-123");
+    const res = await resolveSchoolForCaller({ id: "user-1" });
     expect(res).toBe("school-123");
-    expect(mockIsOwner).not.toHaveBeenCalled();
-    expect(mockGetFirstSchool).not.toHaveBeenCalled();
+    expect(mockGetFirstSchool).toHaveBeenCalled();
   });
 
   it("returns null when profile is null", async () => {
@@ -32,22 +32,17 @@ describe("resolveSchoolForCaller", () => {
     expect(res).toBeNull();
   });
 
-  it("resolves fallback first active school only when caller is platform owner", async () => {
-    mockIsOwner.mockResolvedValue(true);
+  it("resolves the singleton school for the owner", async () => {
     mockGetFirstSchool.mockResolvedValue("first-school-uuid");
 
-    const res = await resolveSchoolForCaller({ id: "owner-1", school_id: null });
+    const res = await resolveSchoolForCaller({ id: "owner-1" });
     expect(res).toBe("first-school-uuid");
-    expect(mockIsOwner).toHaveBeenCalledWith("owner-1");
     expect(mockGetFirstSchool).toHaveBeenCalled();
   });
 
-  it("returns null for non-owner caller without school_id (preventing cross-tenant fallback)", async () => {
-    mockIsOwner.mockResolvedValue(false);
-
-    const res = await resolveSchoolForCaller({ id: "dissociated-user", school_id: null });
+  it("returns null when no active school exists", async () => {
+    mockGetFirstSchool.mockResolvedValue(null);
+    const res = await resolveSchoolForCaller({ id: "dissociated-user" });
     expect(res).toBeNull();
-    expect(mockIsOwner).toHaveBeenCalledWith("dissociated-user");
-    expect(mockGetFirstSchool).not.toHaveBeenCalled();
   });
 });

@@ -3,8 +3,8 @@ import { computeBackupChecksum } from "./computeBackupChecksum";
 
 describe("computeBackupChecksum", () => {
   it("is stable when object keys appear in a different order", () => {
-    const a = { departments: [{ id: "d1", name_en: "IT", school_id: "s1" }] };
-    const b = { departments: [{ school_id: "s1", name_en: "IT", id: "d1" }] };
+    const a = { departments: [{ id: "d1", name_en: "IT" }] };
+    const b = { departments: [{ name_en: "IT", id: "d1" }] };
 
     expect(computeBackupChecksum(a)).toBe(computeBackupChecksum(b));
   });

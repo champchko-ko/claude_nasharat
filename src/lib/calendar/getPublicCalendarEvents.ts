@@ -11,12 +11,11 @@ export async function getPublicCalendarEvents(
     .from("calendar_events")
     .select(
       `
-      id, school_id, title_ar, title_en, description, category,
+      id, title_ar, title_en, description, category,
       starts_at, ends_at, all_day, visibility, status, location,
       image_path, created_by, published_at, cancelled_at, created_at, updated_at
     `,
     )
-    .eq("school_id", schoolId)
     .eq("visibility", "public")
     .eq("status", "published")
     .gte("ends_at", new Date().toISOString())

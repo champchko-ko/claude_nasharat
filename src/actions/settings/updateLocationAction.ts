@@ -21,11 +21,11 @@ export async function updateLocationAction(
 ): Promise<ActionResult> {
   try {
     const profile = await getCurrentProfile();
-    if (!profile?.school_id) {
+    if (!profile) {
       throw new AuthenticationError("No school associated with profile");
     }
 
-    const allowed = await hasPermission("settings.school.update", profile.school_id);
+    const allowed = await hasPermission("settings.school.update");
     if (!allowed) {
       throw new ForbiddenError("Unauthorized");
     }
@@ -39,8 +39,7 @@ export async function updateLocationAction(
     const { error } = await supabase
       .from("locations")
       .update(payload)
-      .eq("id", locationId)
-      .eq("school_id", profile.school_id);
+      .eq("id", locationId);
 
     if (error) {
       throw mapDatabaseError(error);

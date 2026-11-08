@@ -13,8 +13,6 @@ export function resolveRoleDisplayName(
       return t("roleOperator");
     case "school_admin":
       return t("roleSchoolAdmin");
-    case "auditor":
-      return t("roleAuditor");
     case "owner":
       return t("roleOwner");
     default:

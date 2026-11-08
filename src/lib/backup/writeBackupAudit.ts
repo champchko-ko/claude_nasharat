@@ -20,7 +20,6 @@ export async function writeBackupAudit(input: BackupAuditInput): Promise<void> {
   const admin = createSupabaseAdminClient();
 
   const { error } = await admin.from("audit_logs").insert({
-    school_id: input.access.schoolId,
     actor_id: input.access.userId,
     actor_label: input.access.userEmail,
     action: `${input.operation}.${input.phase}`,

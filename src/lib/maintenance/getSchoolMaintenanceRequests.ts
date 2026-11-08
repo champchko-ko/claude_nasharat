@@ -13,7 +13,7 @@ export async function getSchoolMaintenanceRequests(
     .from("maintenance_requests")
     .select(
       `
-      id, school_id, ticket_number, title, description, category,
+      id, ticket_number, title, description, category,
       location_id, area, asset_ref, priority, status,
       reporter_id, assigned_operator_id,
       first_response_at, resolved_at, closed_at, created_at, updated_at,
@@ -23,7 +23,6 @@ export async function getSchoolMaintenanceRequests(
       assigned_operator:profiles!maintenance_requests_assigned_operator_id_fkey(id, full_name, email)
     `,
     )
-    .eq("school_id", schoolId)
     .order("created_at", { ascending: false });
 
   if (error) {

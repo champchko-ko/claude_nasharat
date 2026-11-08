@@ -12,11 +12,11 @@ export async function isActiveSchoolMember(
   userId: string,
   schoolId: string,
 ): Promise<boolean> {
+  void schoolId;
   const { data, error } = await supabase
     .from("profiles")
     .select("id")
     .eq("id", userId)
-    .eq("school_id", schoolId)
     .eq("is_active", true)
     .maybeSingle();
 

@@ -1,4 +1,4 @@
--- 0002: Enumerated domains (build_plan.md §5). Statuses are closed sets by design.
+-- 0002: Enumerated domains. Statuses are closed sets by design.
 
 create type public.circular_status as enum (
   'draft', 'published', 'in_progress', 'completed', 'overdue', 'archived', 'cancelled'
@@ -19,6 +19,8 @@ create type public.maintenance_status as enum (
   'resolved', 'closed', 'reopened', 'rejected'
 );
 
-create type public.calendar_visibility as enum ('public', 'internal');
-
 create type public.calendar_status as enum ('draft', 'published', 'cancelled', 'archived');
+
+-- One visibility type shared by every table that can be shown to the public.
+-- 'internal' (the default everywhere) means authorised users only.
+create type public.content_visibility as enum ('public', 'internal');

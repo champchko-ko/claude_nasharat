@@ -3,14 +3,14 @@ import { getCurrentSchool } from "@/lib/school/getCurrentSchool";
 import { ForbiddenError } from "@/lib/errors/ForbiddenError";
 
 export async function assertCanRegisterAchievement(
-  profile: { id: string; school_id: string | null; department_id: string | null } | null,
+  profile: { id: string; department_id: string | null } | null,
   targetDepartmentId?: string | null,
 ): Promise<{ schoolId: string; profileId: string }> {
   if (!profile) {
     throw new ForbiddenError("Unauthorized");
   }
 
-  const school = await getCurrentSchool(profile.school_id);
+  const school = await getCurrentSchool();
   if (!school) {
     throw new ForbiddenError("No school associated with profile");
   }

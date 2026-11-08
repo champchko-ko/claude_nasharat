@@ -7,7 +7,6 @@ export async function queryAdminSchoolNumber(
 ): Promise<string> {
   const admin = createSupabaseAdminClient();
   const { data: adminRefNum, error: adminError } = await admin.rpc("generate_school_number", {
-    p_school: schoolId,
     p_kind: kind,
   });
 

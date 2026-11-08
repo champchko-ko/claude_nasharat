@@ -19,7 +19,7 @@ const SUITES = ["supabase/tests/rls.harness.test.mjs", "supabase/tests/rls.batte
 async function findExistingPlatformOwner(url, serviceKey) {
   const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
 
-  const ownerRoles = await fetch(`${url}/rest/v1/roles?select=id&key=eq.owner&school_id=is.null`, {
+  const ownerRoles = await fetch(`${url}/rest/v1/roles?select=id&key=eq.owner`, {
     headers,
   });
   if (!ownerRoles.ok) {
@@ -32,7 +32,7 @@ async function findExistingPlatformOwner(url, serviceKey) {
 
   const roleIds = roles.map((role) => role.id).join(",");
   const assignments = await fetch(
-    `${url}/rest/v1/user_role_assignments?select=id&role_id=in.(${roleIds})&school_id=is.null&limit=1`,
+    `${url}/rest/v1/user_role_assignments?select=id&role_id=in.(${roleIds})&limit=1`,
     { headers },
   );
   if (!assignments.ok) {

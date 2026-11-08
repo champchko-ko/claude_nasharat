@@ -21,12 +21,8 @@ export async function deleteMaintenanceRequestAction(requestId: string): Promise
 
     const isOwner = await isPlatformOwner(profile.id);
     if (!isOwner) {
-      if (!profile.school_id) {
-        throw new AuthenticationError("No school associated with profile");
-      }
       const canDelete =
-        (await hasPermission("maintenance.close", profile.school_id)) ||
-        (await hasPermission("users.manage", profile.school_id));
+        (await hasPermission("maintenance.close")) || (await hasPermission("users.manage"));
       if (!canDelete) {
         throw new ForbiddenError("Unauthorized to delete maintenance request");
       }
@@ -49,4 +45,3 @@ export async function deleteMaintenanceRequestAction(requestId: string): Promise
     return formatActionErrorResult(appError);
   }
 }
-

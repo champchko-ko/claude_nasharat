@@ -5,7 +5,6 @@ import { mapDatabaseError } from "@/lib/errors/mapDatabaseError";
 
 export interface AssignableTicket {
   id: string;
-  school_id: string;
   status: MaintenanceStatus;
   priority: MaintenancePriority;
   assigned_operator_id: string | null;
@@ -18,7 +17,7 @@ export async function fetchAssignableTicket(
 ): Promise<AssignableTicket> {
   const { data: ticket, error: ticketError } = await supabase
     .from("maintenance_requests")
-    .select("id, school_id, status, priority, assigned_operator_id")
+    .select("id, status, priority, assigned_operator_id")
     .eq("id", requestId)
     .maybeSingle();
 
@@ -26,7 +25,8 @@ export async function fetchAssignableTicket(
     throw mapDatabaseError(ticketError);
   }
 
-  if (!ticket || ticket.school_id !== schoolId) {
+  void schoolId;
+  if (!ticket) {
     throw new NotFoundError("Ticket not found");
   }
 

@@ -2,10 +2,10 @@ import { createSupabaseServerClient, createSupabaseAdminClient } from "@/lib/sup
 import type { SchoolDocumentRow } from "./types";
 
 const DOC_SELECT_FIELDS =
-  "id, school_id, slug, title, description, file_path, file_name, file_size, mime_type, is_published, created_by, created_at, updated_at";
+  "id, slug, title, description, file_path, file_name, file_size, mime_type, status, visibility, created_by, created_at, updated_at";
 
 const FALLBACK_SELECT_FIELDS =
-  "id, school_id, slug, title, description, file_path, file_name, file_size, mime_type, created_by, created_at, updated_at";
+  "id, slug, title, description, file_path, file_name, file_size, mime_type, status, visibility, created_by, created_at, updated_at";
 
 export async function getPublicSchoolDocuments(
   schoolId?: string | null,
@@ -16,8 +16,7 @@ export async function getPublicSchoolDocuments(
   const { data, error } = await supabase
     .from("school_documents")
     .select(DOC_SELECT_FIELDS)
-    .eq("school_id", schoolId)
-    .or("is_published.eq.true,is_published.is.null")
+    .eq("status", "published")
     .order("created_at", { ascending: false });
 
   let rows: Record<string, unknown>[] | null = data;
@@ -25,7 +24,6 @@ export async function getPublicSchoolDocuments(
     const fallback = await supabase
       .from("school_documents")
       .select(FALLBACK_SELECT_FIELDS)
-      .eq("school_id", schoolId)
       .order("created_at", { ascending: false });
     rows = fallback.data;
   }
@@ -35,7 +33,6 @@ export async function getPublicSchoolDocuments(
     const adminRes = await admin
       .from("school_documents")
       .select(FALLBACK_SELECT_FIELDS)
-      .eq("school_id", schoolId)
       .order("created_at", { ascending: false });
     rows = adminRes.data ?? rows;
   }
@@ -44,7 +41,7 @@ export async function getPublicSchoolDocuments(
 
   return rows.map((doc) => ({
     ...doc,
-    is_published: typeof doc.is_published === "boolean" ? doc.is_published : true,
+    is_published: doc.status === "published" && doc.visibility === "public",
     file_url: `/api/documents/${doc.id as string}/preview`,
   })) as unknown as SchoolDocumentRow[];
 }

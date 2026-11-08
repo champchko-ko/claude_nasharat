@@ -1,21 +1,36 @@
--- 0003: Core school-scoped tables (build_plan.md §5).
--- Conventions: UUID PKs, timestamptz timestamps, school_id on school-scoped rows.
+-- 0003: School, organisation, people, roles and permissions.
+-- One school per deployment: `schools` and `school_settings` are single-row
+-- tables. Nothing else carries a tenant column; all resources belong to the
+-- singleton school row.
 
 create table public.schools (
   id uuid primary key default gen_random_uuid(),
+  -- Exactly one row can exist: `singleton` is unique and can only be true.
+  singleton boolean not null default true unique check (singleton),
   name_ar text not null,
   name_en text not null,
   slug text not null unique,
-  timezone text not null default 'UTC',
   logo_path text,
   is_active boolean not null default true,
+  phone text,
+  email text,
+  manager_name_ar text,
+  manager_name_en text,
+  assistant_manager_ar text,
+  assistant_manager_en text,
+  assistant_manager_2_ar text,
+  assistant_manager_2_en text,
+  address_ar text,
+  address_en text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
 create table public.school_settings (
-  school_id uuid primary key references public.schools(id) on delete cascade,
+  singleton boolean primary key default true check (singleton)
+    references public.schools (singleton) on delete cascade,
   academic_year text,
+  -- Day numbers 0 (Sunday) to 6 (Saturday), chosen by the school.
   working_days smallint[] not null default '{0,1,2,3,4}',
   locale text not null default 'ar' check (locale in ('ar', 'en')),
   date_format text not null default 'yyyy-MM-dd',
@@ -23,6 +38,10 @@ create table public.school_settings (
   vision text,
   mission text,
   objectives text,
+  vision_ar text,
+  vision_en text,
+  mission_ar text,
+  mission_en text,
   circular_policy jsonb not null default '{}'::jsonb,
   maintenance_policy jsonb not null default '{}'::jsonb,
   calendar_policy jsonb not null default '{}'::jsonb,
@@ -33,18 +52,15 @@ create table public.school_settings (
 
 create table public.departments (
   id uuid primary key default gen_random_uuid(),
-  school_id uuid not null references public.schools(id) on delete cascade,
   name_ar text not null,
   name_en text not null,
   is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index departments_school_idx on public.departments (school_id);
 
 create table public.locations (
   id uuid primary key default gen_random_uuid(),
-  school_id uuid not null references public.schools(id) on delete cascade,
   building text not null,
   floor text,
   room text,
@@ -53,67 +69,74 @@ create table public.locations (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index locations_school_idx on public.locations (school_id);
 
 create table public.profiles (
-  id uuid primary key references auth.users(id) on delete cascade,
+  id uuid primary key references auth.users (id) on delete cascade,
   full_name text not null,
   email text,
   phone text,
   job_title text,
-  school_id uuid references public.schools(id) on delete set null,
-  department_id uuid references public.departments(id) on delete set null,
+  department_id uuid references public.departments (id) on delete set null,
   is_active boolean not null default true,
-  invited_by uuid references public.profiles(id),
+  invited_by uuid references public.profiles (id) on delete set null,
   last_seen_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create index profiles_school_idx on public.profiles (school_id);
 create index profiles_department_idx on public.profiles (department_id);
+create index profiles_invited_by_idx on public.profiles (invited_by);
 
 alter table public.departments
-  add column head_profile_id uuid references public.profiles(id) on delete set null;
+  add column head_profile_id uuid references public.profiles (id) on delete set null;
+create index departments_head_profile_idx on public.departments (head_profile_id);
 
-create table public.roles (
-  id uuid primary key default gen_random_uuid(),
-  key text not null,
-  name text not null,
-  school_id uuid references public.schools(id) on delete cascade,
-  is_system boolean not null default false,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
-);
-create unique index roles_system_key_idx on public.roles (key) where school_id is null;
-create unique index roles_school_key_idx on public.roles (key, school_id) where school_id is not null;
-
+-- Permissions catalogue. Labels live here (not in application code) so there is
+-- one source of truth. A permission only does something if code enforces it,
+-- so new keys are added together with the policy or screen that uses them.
 create table public.permissions (
   key text primary key,
-  category text not null default 'general'
+  category text not null default 'general',
+  name_ar text not null,
+  name_en text not null,
+  description text,
+  sort_order integer not null default 0
 );
 
+-- Roles. The five system roles are seeded; the owner creates any others.
+create table public.roles (
+  id uuid primary key default gen_random_uuid(),
+  key text not null unique check (key ~ '^[a-z][a-z0-9_]{1,62}$'),
+  name_ar text not null,
+  name_en text not null,
+  is_system boolean not null default false,
+  -- A locked role cannot have its permissions or key changed. Only `owner`.
+  is_locked boolean not null default false,
+  -- When true, a user holding the role must be assigned to a department.
+  requires_department boolean not null default false,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  check (not is_locked or is_system)
+);
+
+-- Which permissions a role holds. Chosen entirely by the owner; no grants are
+-- seeded. The locked owner role holds every permission implicitly.
 create table public.role_permissions (
-  role_id uuid not null references public.roles(id) on delete cascade,
-  permission_key text not null references public.permissions(key) on delete cascade,
+  role_id uuid not null references public.roles (id) on delete cascade,
+  permission_key text not null references public.permissions (key) on delete cascade,
   primary key (role_id, permission_key)
 );
+create index role_permissions_permission_key_idx on public.role_permissions (permission_key);
 
+-- One role per user. The department applies to department-bound roles.
 create table public.user_role_assignments (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references public.profiles(id) on delete cascade,
-  role_id uuid not null references public.roles(id) on delete cascade,
-  school_id uuid references public.schools(id) on delete cascade,
-  department_id uuid references public.departments(id) on delete cascade,
-  assigned_by uuid references public.profiles(id),
+  user_id uuid not null unique references public.profiles (id) on delete cascade,
+  role_id uuid not null references public.roles (id) on delete restrict,
+  department_id uuid references public.departments (id) on delete cascade,
+  assigned_by uuid references public.profiles (id) on delete set null,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
-create unique index assignments_platform_idx on public.user_role_assignments (user_id, role_id)
-  where school_id is null and department_id is null;
-create unique index assignments_school_idx on public.user_role_assignments (user_id, role_id, school_id)
-  where school_id is not null and department_id is null;
-create unique index assignments_department_idx on public.user_role_assignments (user_id, role_id, school_id, department_id)
-  where department_id is not null;
-create index assignments_user_idx on public.user_role_assignments (user_id);
-create index assignments_school_idx2 on public.user_role_assignments (school_id);
 create index assignments_role_idx on public.user_role_assignments (role_id);
+create index assignments_department_idx on public.user_role_assignments (department_id);
+create index assignments_assigned_by_idx on public.user_role_assignments (assigned_by);

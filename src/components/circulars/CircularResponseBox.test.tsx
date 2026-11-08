@@ -45,7 +45,6 @@ describe("CircularResponseBox", () => {
     const acknowledgedResponse: CircularResponseRow = {
       id: "resp-1",
       circular_id: "circ-1",
-      school_id: "school-1",
       department_id: "dept-1",
       responder_id: "user-1",
       response_type: "approval",
@@ -76,7 +75,6 @@ describe("CircularResponseBox", () => {
     const approvedResponse: CircularResponseRow = {
       id: "resp-2",
       circular_id: "circ-1",
-      school_id: "school-1",
       department_id: "dept-1",
       responder_id: "user-1",
       response_type: "approval",

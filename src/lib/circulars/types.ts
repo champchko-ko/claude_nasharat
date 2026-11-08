@@ -12,7 +12,6 @@ export type CircularResponseStatus =
 
 export type CircularRow = {
   id: string;
-  school_id: string;
   ref_number: string;
   title: string;
   body: string;
@@ -35,7 +34,6 @@ export type CircularRow = {
 export type CircularAttachmentRow = {
   id: string;
   circular_id: string;
-  school_id: string;
   path: string;
   mime: string | null;
   size_bytes: number | null;
@@ -56,7 +54,6 @@ export type CircularTargetRow = {
 export type CircularResponseRow = {
   id: string;
   circular_id: string;
-  school_id: string;
   department_id: string;
   department_name?: string | null;
   responder_id: string;

@@ -44,7 +44,7 @@ describe("getSchoolAuditLogs", () => {
     const result = await getSchoolAuditLogs("school-1");
 
     expect(mockFrom).toHaveBeenCalledWith("audit_logs");
-    expect(mockEq).toHaveBeenCalledWith("school_id", "school-1");
+    expect(mockEq).not.toHaveBeenCalledWith("tenant_id", "school-1");
     expect(mockOrder).toHaveBeenCalledWith("created_at", { ascending: false });
     expect(mockRange).toHaveBeenCalledWith(0, 49);
     expect(result.logs).toHaveLength(1);

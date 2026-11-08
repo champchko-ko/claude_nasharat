@@ -65,7 +65,6 @@ describe("PublicDocumentsSection", () => {
     const mockDocs: SchoolDocumentRow[] = [
       {
         id: "d1",
-        school_id: "s1",
         slug: "operational-plan",
         title: "الخطة التشغيلية 2026",
         description: "تفاصيل الخطة",
@@ -90,4 +89,3 @@ describe("PublicDocumentsSection", () => {
     expect(screen.getByText("تحميل")).toBeDefined();
   });
 });
-

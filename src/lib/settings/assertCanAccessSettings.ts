@@ -16,7 +16,7 @@ export async function assertCanAccessSettings(): Promise<SettingsAccessResult> {
   }
 
   const [permissions, isOwner] = await Promise.all([
-    getEffectivePermissions(profile.school_id),
+    getEffectivePermissions(),
     isPlatformOwner(profile.id),
   ]);
 

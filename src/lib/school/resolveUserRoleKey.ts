@@ -1,15 +1,26 @@
 type RoleAssignment = {
-  roles: { key: string; name: string } | null;
+  roles: { key: string } | null;
 };
 
-export function resolveUserRoleKey(assignments?: RoleAssignment[] | null): string | null {
-  if (!assignments || assignments.length === 0) return null;
+function normalizeAssignments(
+  assignments?: RoleAssignment | RoleAssignment[] | null,
+): RoleAssignment[] {
+  if (Array.isArray(assignments)) return assignments;
+  if (assignments) return [assignments];
+  return [];
+}
 
-  for (const a of assignments) {
+export function resolveUserRoleKey(
+  assignments?: RoleAssignment | RoleAssignment[] | null,
+): string | null {
+  const normalized = normalizeAssignments(assignments);
+  if (normalized.length === 0) return null;
+
+  for (const a of normalized) {
     if (a.roles?.key && a.roles.key !== "owner") {
       return a.roles.key;
     }
   }
 
-  return assignments[0]?.roles?.key ?? null;
+  return normalized[0]?.roles?.key ?? null;
 }

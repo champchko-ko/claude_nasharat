@@ -7,7 +7,6 @@ export type ProfileRow = {
   full_name: string;
   email: string | null;
   job_title: string | null;
-  school_id: string | null;
   department_id: string | null;
   department_name_ar?: string | null;
   department_name_en?: string | null;
@@ -23,7 +22,7 @@ export async function getCurrentProfile(): Promise<ProfileRow | null> {
   const { data, error } = await supabase
     .from("profiles")
     .select(
-      "id, full_name, email, job_title, school_id, department_id, is_active, departments!profiles_department_id_fkey(id, name_ar, name_en)",
+      "id, full_name, email, job_title, department_id, is_active, departments!profiles_department_id_fkey(id, name_ar, name_en)",
     )
     .eq("id", userData.user.id)
     .maybeSingle();

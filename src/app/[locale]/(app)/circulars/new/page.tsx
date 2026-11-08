@@ -11,8 +11,8 @@ export default async function NewCircularPage({ params }: { params: Promise<{ lo
   const t = await getTranslations("circulars");
 
   const profile = await getCurrentProfile();
-  const canCreate = profile?.school_id
-    ? await hasPermission("circular.create", profile.school_id).catch(() => false)
+  const canCreate = profile
+    ? await hasPermission("circular.create").catch(() => false)
     : false;
 
   if (!canCreate) {
@@ -23,7 +23,7 @@ export default async function NewCircularPage({ params }: { params: Promise<{ lo
     );
   }
 
-  const departments = await getSchoolDepartments(profile?.school_id);
+  const departments = await getSchoolDepartments("singleton");
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6">

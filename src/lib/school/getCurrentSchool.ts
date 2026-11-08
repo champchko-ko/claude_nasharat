@@ -25,13 +25,56 @@ export type SchoolRow = {
 };
 
 const SCHOOL_FIELDS =
-  "id, name_ar, name_en, slug, timezone, logo_path, is_active, phone, email, manager_name_ar, manager_name_en, assistant_manager_ar, assistant_manager_en, assistant_manager_2_ar, assistant_manager_2_en, address_ar, address_en, updated_at";
+  "id, name_ar, name_en, slug, logo_path, is_active, phone, email, manager_name_ar, manager_name_en, assistant_manager_ar, assistant_manager_en, assistant_manager_2_ar, assistant_manager_2_en, address_ar, address_en, updated_at";
+
+const PUBLIC_SCHOOL_FIELDS =
+  "id, name_ar, name_en, slug, logo_path, phone, email, manager_name_ar, manager_name_en, assistant_manager_ar, assistant_manager_en, assistant_manager_2_ar, assistant_manager_2_en, address_ar, address_en, academic_year";
+
+type ServerClient = Awaited<ReturnType<typeof createSupabaseServerClient>>;
+
+async function isAnonymous(client: ServerClient): Promise<boolean> {
+  const authResult = await client?.auth?.getUser?.();
+  return Boolean(authResult && !authResult.data.user);
+}
+
+async function getPublicSchool(
+  client: ServerClient,
+  schoolId?: string | null,
+): Promise<SchoolRow | null> {
+  const publicQuery = client.from("public_school_profiles").select(PUBLIC_SCHOOL_FIELDS);
+  const { data, error } = schoolId
+    ? await publicQuery.eq("id", schoolId).maybeSingle()
+    : await publicQuery.limit(1).maybeSingle();
+
+  if (error) {
+    throw mapDatabaseError(error);
+  }
+
+  return data
+    ? ({ ...data, is_active: true, timezone: process.env.SCHOOL_TIMEZONE || "Asia/Kuwait" } as SchoolRow)
+    : null;
+}
+
+async function getAcademicYear(client: ServerClient): Promise<string | null> {
+  const { data, error } = await client
+    .from("school_settings")
+    .select("academic_year")
+    .eq("singleton", true)
+    .maybeSingle();
+
+  if (error) {
+    throw mapDatabaseError(error);
+  }
+  return data?.academic_year ?? null;
+}
 
 export async function getCurrentSchool(schoolId?: string | null): Promise<SchoolRow | null> {
   const supabase = await createSupabaseServerClient();
+  if (await isAnonymous(supabase)) return getPublicSchool(supabase, schoolId);
+
   let targetId = schoolId;
 
-  if (targetId === undefined) {
+  if (targetId === undefined || targetId === "singleton") {
     targetId = await getFirstActiveSchoolId();
   }
   if (!targetId) {
@@ -48,21 +91,14 @@ export async function getCurrentSchool(schoolId?: string | null): Promise<School
     throw mapDatabaseError(error);
   }
 
-  const school = (data as SchoolRow | null) ?? null;
+  const school = data
+    ? ({ ...data, timezone: process.env.SCHOOL_TIMEZONE || "Asia/Kuwait" } as SchoolRow)
+    : null;
 
   if (school) {
-    const { data: settings, error: settingsError } = await supabase
-      .from("school_settings")
-      .select("academic_year")
-      .eq("school_id", school.id)
-      .maybeSingle();
-
-    if (settingsError) {
-      throw mapDatabaseError(settingsError);
-    }
-
-    if (settings?.academic_year) {
-      school.academic_year = settings.academic_year;
+    const academicYear = await getAcademicYear(supabase);
+    if (academicYear) {
+      school.academic_year = academicYear;
     }
   }
 

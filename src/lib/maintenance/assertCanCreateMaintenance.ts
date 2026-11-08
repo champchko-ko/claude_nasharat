@@ -9,13 +9,13 @@ export async function assertCanCreateMaintenance(): Promise<{
   departmentId: string | null;
 }> {
   const profile = await getCurrentProfile();
-  if (!profile?.school_id) {
+  if (!profile) {
     throw new AuthenticationError("No school associated with profile");
   }
 
   const allowed = await hasPermission(
     "maintenance.create",
-    profile.school_id,
+    undefined,
     profile.department_id,
   );
   if (!allowed) {
@@ -23,7 +23,7 @@ export async function assertCanCreateMaintenance(): Promise<{
   }
 
   return {
-    schoolId: profile.school_id,
+    schoolId: "singleton",
     profileId: profile.id,
     departmentId: profile.department_id,
   };

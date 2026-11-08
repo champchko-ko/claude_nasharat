@@ -60,7 +60,6 @@ async function seedUser(
   const { error: assignmentError } = await admin.from("user_role_assignments").insert({
     user_id: id,
     role_id: roleId,
-    school_id: input.schoolId,
     department_id: input.departmentId,
   });
   if (assignmentError) {

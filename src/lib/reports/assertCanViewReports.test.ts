@@ -32,7 +32,6 @@ describe("assertCanViewReports", () => {
   it("returns authorized with null scope for platform owner", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "owner-1",
-      school_id: null,
       full_name: "Owner",
     } as unknown as Awaited<ReturnType<typeof getCurrentProfile>>);
 
@@ -52,7 +51,6 @@ describe("assertCanViewReports", () => {
   it("returns authorized with null scope for school manager", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "mgr-1",
-      school_id: "sch-1",
       full_name: "Manager",
       department_id: "dept-1",
     } as unknown as Awaited<ReturnType<typeof getCurrentProfile>>);
@@ -72,7 +70,6 @@ describe("assertCanViewReports", () => {
   it("returns authorized with scopedDepartmentId for department head holding reports.view", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "head-1",
-      school_id: "sch-1",
       full_name: "Dept Head",
       department_id: "dept-42",
     } as unknown as Awaited<ReturnType<typeof getCurrentProfile>>);
@@ -92,7 +89,6 @@ describe("assertCanViewReports", () => {
   it("rejects user holding reports.view without a department assignment", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "user-1",
-      school_id: "sch-1",
       full_name: "Staff",
       department_id: null,
     } as unknown as Awaited<ReturnType<typeof getCurrentProfile>>);
@@ -109,7 +105,6 @@ describe("assertCanViewReports", () => {
   it("rejects user lacking report permissions", async () => {
     vi.mocked(getCurrentProfile).mockResolvedValue({
       id: "user-1",
-      school_id: "sch-1",
       full_name: "Staff",
       department_id: "dept-1",
     } as unknown as Awaited<ReturnType<typeof getCurrentProfile>>);

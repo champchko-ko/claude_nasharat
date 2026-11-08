@@ -29,7 +29,6 @@ export async function createMaintenanceRecord(
   const { data, error } = await supabase
     .from("maintenance_requests")
     .insert({
-      school_id: params.schoolId,
       ticket_number: ticketNumber,
       title: params.title,
       description: params.description,

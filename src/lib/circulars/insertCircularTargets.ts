@@ -14,12 +14,12 @@ export async function insertCircularTargets(
   schoolId: string,
   departmentIds: string[],
 ): Promise<{ error?: string }> {
+  void schoolId;
   const uniqueIds = [...new Set(departmentIds)];
   if (uniqueIds.length === 0) return {};
 
   const targets = uniqueIds.map((deptId) => ({
     circular_id: circularId,
-    school_id: schoolId,
     department_id: deptId,
   }));
 

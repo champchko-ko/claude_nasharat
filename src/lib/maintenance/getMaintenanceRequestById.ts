@@ -7,7 +7,7 @@ export async function getMaintenanceRequestById(id: string): Promise<Maintenance
     .from("maintenance_requests")
     .select(
       `
-      id, school_id, ticket_number, title, description, category,
+      id, ticket_number, title, description, category,
       location_id, area, asset_ref, priority, status,
       reporter_id, assigned_operator_id,
       first_response_at, resolved_at, closed_at, created_at, updated_at,

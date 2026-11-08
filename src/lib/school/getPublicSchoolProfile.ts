@@ -7,7 +7,7 @@ export interface PublicSchoolProfileRow {
   name_en: string;
   slug: string;
   logo_path: string | null;
-  timezone: string;
+  timezone?: string;
   phone?: string | null;
   email?: string | null;
   instagram_url?: string | null;
@@ -37,7 +37,7 @@ export async function getPublicSchoolProfile(
   const query = supabase
     .from("public_school_profiles")
     .select(
-      "id, name_ar, name_en, slug, logo_path, timezone, phone, email, manager_name_ar, manager_name_en, assistant_manager_ar, assistant_manager_en, assistant_manager_2_ar, assistant_manager_2_en, address_ar, address_en, academic_year, public_description, vision, mission, vision_ar, vision_en, mission_ar, mission_en, objectives",
+      "id, name_ar, name_en, slug, logo_path, phone, email, manager_name_ar, manager_name_en, assistant_manager_ar, assistant_manager_en, assistant_manager_2_ar, assistant_manager_2_en, address_ar, address_en, academic_year, public_description, vision, mission, vision_ar, vision_en, mission_ar, mission_en, objectives",
     );
 
   const { data, error } = schoolId

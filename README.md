@@ -1,5 +1,5 @@
 # School Administration Portal (بوابة الإدارة المدرسية)
-
+kh
 A modern, enterprise-grade school management platform built for modern educational institutions. Engineered with an Arabic-first Right-to-Left (RTL) experience with full English (LTR) localization, strict role-based access control (RBAC), real-time WebSockets notifications, comprehensive maintenance workflows, administrative circulars, recurring calendar events, executive reports, and an adaptive multi-theme design system.
 
 ---

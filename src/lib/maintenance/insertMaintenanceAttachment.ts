@@ -14,7 +14,6 @@ export async function insertMaintenanceAttachment(
 ): Promise<{ error?: string }> {
   const { error } = await supabase.from("maintenance_attachments").insert({
     request_id: params.requestId,
-    school_id: params.schoolId,
     kind: params.kind,
     path: params.path,
     mime: params.mime,

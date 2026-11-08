@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { FileTextIcon } from "lucide-react";
 import type { SchoolDocumentRow } from "@/lib/documents/types";
+import { PdfDocumentPreview } from "./PdfDocumentPreview";
 
 export function SchoolDocumentPreviewContent({
   currentDoc,
@@ -38,6 +39,10 @@ export function SchoolDocumentPreviewContent({
         />
       </div>
     );
+  }
+
+  if (currentDoc.mime_type === "application/pdf" || /\.pdf(?:$|\?)/i.test(fileUrl)) {
+    return <PdfDocumentPreview fileUrl={fileUrl} title={currentDoc.title} />;
   }
 
   return (

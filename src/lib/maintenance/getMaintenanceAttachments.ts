@@ -9,7 +9,7 @@ export async function getMaintenanceAttachments(
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase
     .from("maintenance_attachments")
-    .select("id, request_id, school_id, kind, path, mime, size_bytes, uploaded_by, created_at")
+    .select("id, request_id, kind, path, mime, size_bytes, uploaded_by, created_at")
     .eq("request_id", requestId)
     .order("created_at", { ascending: true });
 

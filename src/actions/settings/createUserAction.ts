@@ -2,7 +2,7 @@
 
 import { revalidateSettingsPath } from "@/lib/settings/revalidateSettingsPath";
 import { assertCanManageSchoolUsers } from "@/lib/school/assertCanManageSchoolUsers";
-import { assertDepartmentBelongsToSchool } from "@/lib/school/assertDepartmentBelongsToSchool";
+import { assertDepartmentExists } from "@/lib/school/assertDepartmentExists";
 import {
   sanitizeError,
   formatActionErrorResult,
@@ -35,8 +35,8 @@ export async function createUserAction(input: CreateUserInput): Promise<ActionRe
       throw new ValidationError(val.error || "Invalid user input");
     }
 
-    // A client-supplied department id must belong to the caller's school.
-    await assertDepartmentBelongsToSchool(input.departmentId, auth.schoolId);
+    // A client-supplied department id must refer to an existing department.
+    await assertDepartmentExists(input.departmentId);
 
     const res = await provisionAuthUser({
       fullName: val.trimmedName,
@@ -45,7 +45,6 @@ export async function createUserAction(input: CreateUserInput): Promise<ActionRe
       jobTitle: input.jobTitle,
       departmentId: input.departmentId,
       roleKey: input.roleKey || "staff",
-      schoolId: auth.schoolId,
       callerId: auth.profileId,
     });
 

@@ -1,134 +1,102 @@
 import { describe, it, expect, vi } from "vitest";
-import { assignUserRole } from "./assignUserRole";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { assignUserRole } from "./assignUserRole";
+
+type RoleRow = { id: string; is_system: boolean; requires_department: boolean } | null;
+
+function buildClient(role: RoleRow, existing: { id: string } | null) {
+  const insert = vi.fn().mockResolvedValue({ error: null });
+  const updateEq = vi.fn().mockResolvedValue({ error: null });
+  const update = vi.fn().mockReturnValue({ eq: updateEq });
+  const assignments = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    maybeSingle: vi.fn().mockResolvedValue({ data: existing, error: null }),
+    insert,
+    update,
+  };
+  const roles = {
+    select: vi.fn().mockReturnThis(),
+    eq: vi.fn().mockReturnThis(),
+    maybeSingle: vi.fn().mockResolvedValue({ data: role, error: null }),
+  };
+  const supabase = {
+    from: vi.fn((table: string) => {
+      if (table === "roles") return roles;
+      if (table === "user_role_assignments") return assignments;
+      return {};
+    }),
+  } as unknown as SupabaseClient;
+  return { supabase, insert, update, updateEq };
+}
+
+const customRole = { id: "custom-role-id", is_system: false, requires_department: false };
+const adminRole = { id: "admin-role-id", is_system: true, requires_department: false };
+const headRole = { id: "head-role-id", is_system: true, requires_department: true };
 
 describe("assignUserRole", () => {
-  it("scopes role resolution and prefers school-scoped role over system role, setting department", async () => {
-    const rolesMock = [
-      { id: "system-role-id", school_id: null, is_system: true },
-      { id: "school-role-id", school_id: "school-123", is_system: false },
-    ];
+  it("gives a custom role the department it was given", async () => {
+    const { supabase, insert } = buildClient(customRole, null);
 
-    const insertMock = vi.fn().mockResolvedValue({ error: null });
-    const userRoleMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-      insert: insertMock,
-    };
+    await assignUserRole(supabase, "user-1", "admin-1", "electrician", "dept-456");
 
-    const rolesMockObj = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      or: vi.fn().mockResolvedValue({ data: rolesMock, error: null }),
-    };
-
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === "roles") return rolesMockObj;
-        if (table === "user_role_assignments") return userRoleMock;
-        return {};
-      }),
-    } as unknown as SupabaseClient;
-
-    await assignUserRole(supabase, "user-1", "school-123", "admin-1", "custom_role", "dept-456");
-
-    expect(insertMock).toHaveBeenCalledWith({
+    expect(insert).toHaveBeenCalledWith({
       user_id: "user-1",
-      role_id: "school-role-id",
-      school_id: "school-123",
+      role_id: "custom-role-id",
       department_id: "dept-456",
       assigned_by: "admin-1",
     });
   });
 
-  it("forces department_id to null for school-wide roles like school_admin", async () => {
-    const rolesMock = [{ id: "admin-role-id", school_id: null, is_system: true }];
-    const insertMock = vi.fn().mockResolvedValue({ error: null });
-    const userRoleMock = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-      insert: insertMock,
-    };
-    const rolesMockObj = {
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      or: vi.fn().mockResolvedValue({ data: rolesMock, error: null }),
-    };
+  it("forces department_id to null for a school-wide system role", async () => {
+    const { supabase, insert } = buildClient(adminRole, null);
 
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === "roles") return rolesMockObj;
-        if (table === "user_role_assignments") return userRoleMock;
-        return {};
-      }),
-    } as unknown as SupabaseClient;
+    await assignUserRole(supabase, "user-1", "admin-1", "school_admin", "dept-456");
 
-    await assignUserRole(supabase, "user-1", "school-123", "admin-1", "school_admin", "dept-456");
-
-    expect(insertMock).toHaveBeenCalledWith({
+    expect(insert).toHaveBeenCalledWith({
       user_id: "user-1",
       role_id: "admin-role-id",
-      school_id: "school-123",
       department_id: null,
       assigned_by: "admin-1",
     });
   });
 
-  it("throws descriptive error when role is not found", async () => {
-    const supabase = {
-      from: vi.fn(() => ({
-        select: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockReturnThis(),
-        or: vi.fn().mockResolvedValue({ data: [], error: null }),
-      })),
-    } as unknown as SupabaseClient;
+  it("requires a department for a department-bound role", async () => {
+    const { supabase, insert } = buildClient(headRole, null);
 
-    await expect(
-      assignUserRole(supabase, "user-1", "school-123", "admin-1", "missing_role"),
-    ).rejects.toThrow("Role 'missing_role' was not found for school 'school-123'");
+    await expect(assignUserRole(supabase, "user-1", "admin-1", "department_head")).rejects.toThrow(
+      "This role requires a department",
+    );
+    expect(insert).not.toHaveBeenCalled();
   });
 
-  it("updates existing role assignment and checks update error", async () => {
-    const rolesMock = [{ id: "system-role-id", school_id: null, is_system: true }];
+  it("updates the single existing assignment instead of adding a second one", async () => {
+    const { supabase, insert, update, updateEq } = buildClient(headRole, { id: "assignment-1" });
 
-    const updateMock = vi.fn().mockReturnValue({
-      eq: vi.fn().mockResolvedValue({ error: new Error("DB write timeout") }),
-    });
+    await assignUserRole(supabase, "user-1", "admin-1", "department_head", "dept-9");
 
-    const supabase = {
-      from: vi.fn((table: string) => {
-        if (table === "roles") {
-          return {
-            select: vi.fn().mockReturnThis(),
-            eq: vi.fn().mockReturnThis(),
-            or: vi.fn().mockResolvedValue({ data: rolesMock, error: null }),
-          };
-        }
-        if (table === "user_role_assignments") {
-          return {
-            select: vi.fn().mockReturnThis(),
-            eq: vi.fn().mockReturnThis(),
-            maybeSingle: vi.fn().mockResolvedValue({
-              data: { id: "existing-assignment-id" },
-              error: null,
-            }),
-            update: updateMock,
-          };
-        }
-        return {};
-      }),
-    } as unknown as SupabaseClient;
-
-    await expect(
-      assignUserRole(supabase, "user-1", "school-123", "admin-1", "teacher", "dept-789"),
-    ).rejects.toThrow("Failed to update user role assignment");
-
-    expect(updateMock).toHaveBeenCalledWith({
-      role_id: "system-role-id",
+    expect(insert).not.toHaveBeenCalled();
+    expect(update).toHaveBeenCalledWith({
+      role_id: "head-role-id",
       assigned_by: "admin-1",
-      department_id: "dept-789",
+      department_id: "dept-9",
     });
+    expect(updateEq).toHaveBeenCalledWith("id", "assignment-1");
+  });
+
+  it("keeps the existing department when none is supplied", async () => {
+    const { supabase, update } = buildClient(customRole, { id: "assignment-1" });
+
+    await assignUserRole(supabase, "user-1", "admin-1", "electrician");
+
+    expect(update).toHaveBeenCalledWith({ role_id: "custom-role-id", assigned_by: "admin-1" });
+  });
+
+  it("rejects an unknown role", async () => {
+    const { supabase } = buildClient(null, null);
+
+    await expect(assignUserRole(supabase, "user-1", "admin-1", "missing_role")).rejects.toThrow(
+      "Role 'missing_role' was not found",
+    );
   });
 });

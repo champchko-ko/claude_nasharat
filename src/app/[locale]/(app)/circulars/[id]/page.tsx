@@ -33,8 +33,8 @@ export default async function CircularDetailPage({
   const [circular, responses, perms, departments, isOwner] = await Promise.all([
     getCircularById(id),
     getCircularResponses(id).catch(() => []),
-    getEffectivePermissions(profile?.school_id).catch((): string[] => []),
-    getSchoolDepartments(profile?.school_id).catch(() => []),
+    getEffectivePermissions().catch((): string[] => []),
+    getSchoolDepartments("singleton").catch(() => []),
     isCurrentUserPlatformOwner(profile?.id),
   ]);
 

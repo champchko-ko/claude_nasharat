@@ -5,7 +5,6 @@ import type { CircularRow } from "./types";
 function createDummyCircular(overrides: Partial<CircularRow>): CircularRow {
   return {
     id: "circ-1",
-    school_id: "sch-1",
     ref_number: "CIR-2026-001",
     title: "Exam Preparation Plan",
     body: "Content",
