@@ -32,22 +32,19 @@ async function handleDocumentPreview(
     }
   }
 
-  const { data: file, error: fileError } = await admin.storage
+  // Let the browser talk directly to Storage after authorization. Native PDF
+  // viewers (especially on Android) use byte-range requests while rendering;
+  // proxying the whole Blob through this route prevents those viewers from
+  // loading reliably inside an iframe.
+  const { data: signedFile, error: fileError } = await admin.storage
     .from("school-documents")
-    .download(doc.file_path);
+    .createSignedUrl(doc.file_path, 120);
 
-  if (fileError || !file) {
+  if (fileError || !signedFile?.signedUrl) {
     throw new NotFoundError("Document file not found");
   }
 
-  return new Response(await file.arrayBuffer(), {
-    headers: {
-      "Cache-Control": "private, no-store",
-      "Content-Disposition": "inline",
-      "Content-Type": file.type || doc.mime_type,
-      "X-Content-Type-Options": "nosniff",
-    },
-  });
+  return Response.redirect(signedFile.signedUrl, 307);
 }
 
 export const GET = withApiErrorHandler(handleDocumentPreview);

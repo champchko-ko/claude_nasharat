@@ -13,6 +13,14 @@ vi.mock("@/lib/documents/getActorDetails", () => ({
   getActorDetails: vi.fn(() => ({ actorId: "user-1" })),
 }));
 
+vi.mock("@/lib/school/getFirstActiveSchoolId", () => ({
+  getFirstActiveSchoolId: vi.fn().mockResolvedValue("school-1"),
+}));
+
+vi.mock("@/lib/documents/isPublicDocumentPreviewAllowed", () => ({
+  isPublicDocumentPreviewAllowed: vi.fn().mockResolvedValue(false),
+}));
+
 vi.mock("@/lib/supabase", () => ({
   createSupabaseAdminClient: vi.fn(() => mockAdmin),
 }));
@@ -45,7 +53,7 @@ describe("GET /api/documents/[id]/preview", () => {
     expect(response.status).toBe(404);
   });
 
-  it("returns an authorized document with frame-safe headers", async () => {
+  it("redirects authorized viewers to a short-lived storage URL", async () => {
     mockAssertCanManageDocuments.mockResolvedValue({
       allowed: true,
       schoolId: "school-1",
@@ -59,8 +67,10 @@ describe("GET /api/documents/[id]/preview", () => {
       },
       error: null,
     });
-    const download = vi.fn().mockResolvedValue({
-      data: new Blob(["PDF content"], { type: "application/pdf" }),
+    const createSignedUrl = vi.fn().mockResolvedValue({
+      data: {
+        signedUrl: "https://storage.example/signed-document-url",
+      },
       error: null,
     });
     mockAdmin.from.mockReturnValue({
@@ -68,16 +78,14 @@ describe("GET /api/documents/[id]/preview", () => {
         eq: vi.fn().mockReturnValue({ maybeSingle }),
       }),
     });
-    mockAdmin.storage.from.mockReturnValue({ download });
+    mockAdmin.storage.from.mockReturnValue({ createSignedUrl });
 
     const response = await GET(new Request("http://localhost/api/documents/document-1/preview"), {
       params: Promise.resolve({ id: "document-1" }),
     });
 
-    expect(response.status).toBe(200);
-    expect(response.headers.get("content-type")).toBe("application/pdf");
-    expect(response.headers.get("content-disposition")).toBe("inline");
-    expect(response.headers.get("cache-control")).toBe("private, no-store");
-    expect(await response.text()).toBe("PDF content");
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("https://storage.example/signed-document-url");
+    expect(createSignedUrl).toHaveBeenCalledWith("school-1/operational-plan/plan.pdf", 120);
   });
 });
