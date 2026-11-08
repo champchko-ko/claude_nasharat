@@ -80,6 +80,31 @@ describe("mapSchoolUserRows", () => {
     expect(manager?.role_key).toBe("school_admin");
   });
 
+  it("handles Supabase's single assignment object shape", () => {
+    const result = mapSchoolUserRows([
+      {
+        id: "admin-object-id",
+        full_name: "School Administrator",
+        email: "admin@school.edu",
+        phone: null,
+        job_title: null,
+        department_id: null,
+        is_active: true,
+        departments: null,
+        user_role_assignments: {
+          roles: { key: "school_admin" },
+        },
+      },
+    ]);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({
+      id: "admin-object-id",
+      role_key: "school_admin",
+      is_owner: false,
+    });
+  });
+
   it("filters out users identified by ownerUserIds set even if assignment is missing", () => {
     const rowsWithoutRole: RawProfileQueryResult[] = [
       {
