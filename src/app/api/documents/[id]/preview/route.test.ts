@@ -53,7 +53,7 @@ describe("GET /api/documents/[id]/preview", () => {
     expect(response.status).toBe(404);
   });
 
-  it("redirects authorized viewers to a short-lived storage URL", async () => {
+  it("returns an authorized document with same-origin PDF headers", async () => {
     mockAssertCanManageDocuments.mockResolvedValue({
       allowed: true,
       schoolId: "school-1",
@@ -67,10 +67,8 @@ describe("GET /api/documents/[id]/preview", () => {
       },
       error: null,
     });
-    const createSignedUrl = vi.fn().mockResolvedValue({
-      data: {
-        signedUrl: "https://storage.example/signed-document-url",
-      },
+    const download = vi.fn().mockResolvedValue({
+      data: new Blob(["PDF content"], { type: "application/pdf" }),
       error: null,
     });
     mockAdmin.from.mockReturnValue({
@@ -78,14 +76,16 @@ describe("GET /api/documents/[id]/preview", () => {
         eq: vi.fn().mockReturnValue({ maybeSingle }),
       }),
     });
-    mockAdmin.storage.from.mockReturnValue({ createSignedUrl });
+    mockAdmin.storage.from.mockReturnValue({ download });
 
     const response = await GET(new Request("http://localhost/api/documents/document-1/preview"), {
       params: Promise.resolve({ id: "document-1" }),
     });
 
-    expect(response.status).toBe(307);
-    expect(response.headers.get("location")).toBe("https://storage.example/signed-document-url");
-    expect(createSignedUrl).toHaveBeenCalledWith("school-1/operational-plan/plan.pdf", 120);
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toBe("application/pdf");
+    expect(response.headers.get("content-disposition")).toBe("inline");
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(await response.text()).toBe("PDF content");
   });
 });
